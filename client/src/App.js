@@ -22,6 +22,7 @@ import AdminPrivateRoute from './components/AdminPrivateRoute';
 import Search from './pages/Search';
 import Projects from './pages/Project';
 import ScrollToTop from './components/ScrollToTop';
+import NewsPage from './pages/NewsPage';
 
 
 const App = () => {
@@ -47,6 +48,7 @@ const App = () => {
             <Route path="/about" element={<AboutPage />} />
             <Route path="/loan" element={<LoanPage />} />
             <Route path="/contactPage" element={<ContactPage />} />
+            <Route path="/news" element={<NewsPage />} />
             <Route path="*" element={<ErrorPage />} />
           </Route>
         </Routes>
