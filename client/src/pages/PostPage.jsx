@@ -17,6 +17,8 @@ const PostPage = () => {
   const { currentUser } = useSelector((state) => state.user);
   const token = currentUser?.token;
 
+
+  
   // Fetch the post details
   useEffect(() => {
     const getPost = async () => {
@@ -73,11 +75,17 @@ const PostPage = () => {
     );
   }
 
+  const formattedDate = new Date(post.createdAt).toLocaleDateString('vi-VN', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  });
+
   return (
     <main className='p-5 flex flex-col max-w-4xl mx-auto min-h-screen'>
       <h1 className='text-3xl lg:text-4xl font-serif text-center mb-6'>{post?.title}</h1>
       <Link to={`/search?category=${post?.category}`} className='self-center mb-5'>
-        <Button color='gray' pill size='xs'>
+      <Button outline gradientDuoTone="greenToBlue" pill size='xs'>
           {post?.category}
         </Button>
       </Link>
@@ -87,7 +95,7 @@ const PostPage = () => {
         className='w-full h-auto max-h-[500px] object-cover mb-6'
       />
       <div className='flex justify-between p-3 border-b border-slate-300 text-xs mb-6'>
-        <span>{post ? new Date(post.createdAt).toLocaleDateString() : ''}</span>
+        <span>{formattedDate}</span>
         <span className='italic'>{post ? `${(post.description.length / 1000).toFixed(0)} mins read` : ''}</span>
       </div>
       <div className='p-3 post-content mb-6' dangerouslySetInnerHTML={{ __html: post?.description }} />

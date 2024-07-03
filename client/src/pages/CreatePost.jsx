@@ -4,7 +4,7 @@ import 'react-quill/dist/quill.snow.css';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { Alert, Button, FileInput, Select, TextInput } from 'flowbite-react';
+import { Alert, Button, FileInput, Select, TextInput, Spinner } from 'flowbite-react';
 import { CircularProgressbar } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
 
@@ -13,7 +13,7 @@ const CreatePost = () => {
   const [title, setTitle] = useState('');
   const [category, setCategory] = useState('Khuyến mãi');
   const [description, setDescription] = useState('');
-
+  const [loading, setLoading] = useState(false);
   const [thumbnail, setThumbnail] = useState('');
   const [publishError, setPublishError] = useState(null);
   const { currentUser } = useSelector((state) => state.user)
@@ -49,6 +49,7 @@ const CreatePost = () => {
 
   const createPost = async (e) => {
     e.preventDefault();
+    setLoading(true);
 
     const postData = new FormData();
 
@@ -67,7 +68,7 @@ const CreatePost = () => {
       const response = await axios.post(`${process.env.REACT_APP_BASE_URL}/posts`, postData, {
         withCredentials: true,
 
-        headers: { 
+        headers: {
           Authorization: `Bearer ${token}`,
           'Content-Type': 'multipart/form-data' // Đảm bảo gửi dữ liệu dưới dạng FormData
         }
@@ -110,7 +111,7 @@ const CreatePost = () => {
               <option key={cat} value={cat}>{cat}</option>
             ))}
           </Select>
-          
+
         </div>
         <div className='flex gap-4 items-center justify-between border-4 border-teal-500 border-dotted p-3'>
           <FileInput
@@ -128,8 +129,19 @@ const CreatePost = () => {
           value={description}
           onChange={setDescription}
         />
-        <Button type='submit' gradientDuoTone='purpleToPink'>
-          Publish
+        <Button
+          gradientDuoTone="greenToBlue"
+          type="submit"
+          disabled={loading}
+        >
+          {loading ? (
+            <>
+              <Spinner size="sm" />
+              <span className="pl-3">Loading...</span>
+            </>
+          ) : (
+            'Create Post'
+          )}
         </Button>
         {publishError && (
           <Alert className='mt-5' color='failure'>
@@ -139,9 +151,9 @@ const CreatePost = () => {
       </form>
     </div>
 
-    
 
-  
+
+
 
   );
 };

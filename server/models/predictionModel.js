@@ -1,6 +1,6 @@
-const mongoose = require('mongoose');
+const { Schema, model } = require('mongoose');
 
-const PredictionSchema = new mongoose.Schema({
+const PredictionSchema = new Schema({
   loan_amnt: Number,
   term: Number,
   int_rate: Number,
@@ -22,8 +22,8 @@ const PredictionSchema = new mongoose.Schema({
   total_acc: Number,
   prediction: String,
   prediction_proba: [[Number]],
-  user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+  user: { type: Schema.Types.ObjectId, ref: 'User' },
   loan_status: {type: Boolean, default: false},  // Tham chiếu đến người dùng
 }, { timestamps: true });
 
-module.exports = mongoose.model('Loan', PredictionSchema);
+module.exports = model('Loan', PredictionSchema);

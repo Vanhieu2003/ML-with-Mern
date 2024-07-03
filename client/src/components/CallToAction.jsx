@@ -1,4 +1,5 @@
 import { Button } from 'flowbite-react';
+import { Link } from 'react-router-dom';
 
 export default function CallToAction() {
   return (
@@ -12,9 +13,7 @@ export default function CallToAction() {
                 Tài chính thông minh - tương lai vững vàng
             </p>
             <Button gradientDuoTone='greenToBlue' className='rounded-tl-xl rounded-bl-none'>
-                <a href="https://www.100jsprojects.com" target='_blank' rel='noopener noreferrer'>
-                    100 JavaScript Projects
-                </a>
+                <Link to='/loan'>Click here try the service !!!</Link>
             </Button>
         </div>
         <div className="p-7 flex-1">

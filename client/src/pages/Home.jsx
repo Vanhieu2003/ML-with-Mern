@@ -32,7 +32,7 @@ const Home = () => {
       >
         View all posts
       </Link>
-      <div className='p-3 bg-amber-100 dark:bg-slate-700'>
+      <div className='p-3  dark:bg-slate-700'>
         <CallToAction />
       </div>
 

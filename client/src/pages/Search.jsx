@@ -1,4 +1,4 @@
-import { Button, Select, TextInput } from 'flowbite-react';
+import { Button, Select, TextInput, Spinner } from 'flowbite-react';
 import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import PostCard from '../components/PostCard';
@@ -13,6 +13,7 @@ export default function Search() {
 
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [loadingMore, setLoadingMore] = useState(false); // Thêm state cho trạng thái tải thêm
   const [showMore, setShowMore] = useState(false);
 
   const location = useLocation();
@@ -82,17 +83,16 @@ export default function Search() {
   };
 
   const handleShowMore = async () => {
+    setLoadingMore(true); // Bắt đầu tải thêm
     const numberOfPosts = posts.length;
     const startIndex = numberOfPosts;
     const urlParams = new URLSearchParams(location.search);
     urlParams.set('startIndex', startIndex);
     const searchQuery = urlParams.toString();
+
     try {
       const res = await axios.get(`${process.env.REACT_APP_BASE_URL}/posts?${searchQuery}`);
-      if (!res.ok) {
-        return;
-      }
-      const data = await res.json();
+      const data = res.data; // Đối với Axios, sử dụng res.data để lấy dữ liệu trả về
       setPosts([...posts, ...data.posts]);
       if (data.posts.length === 9) {
         setShowMore(true);
@@ -101,6 +101,8 @@ export default function Search() {
       }
     } catch (error) {
       console.error("Failed to fetch more posts", error);
+    } finally {
+      setLoadingMore(false); // Kết thúc tải thêm
     }
   };
 
@@ -149,25 +151,33 @@ export default function Search() {
         </form>
       </div>
       <div className='w-full'>
-        <h1 className='text-3xl font-semibold sm:border-b border-gray-500 p-3 mt-5 '>
+        <h1 className='text-3xl font-semibold sm:border-b border-gray-500 p-3 mt-5'>
           Posts results:
         </h1>
         <div className='p-7 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4'>
-          {!loading && posts.length === 0 && (
-            <p className='text-xl text-gray-500'>No posts found.</p>
+          {loading ? (
+            <div className='flex justify-center items-center col-span-full'>
+              <Spinner size="lg" />
+            </div>
+          ) : posts.length === 0 ? (
+            <p className='text-xl text-gray-500 col-span-full'>No posts found.</p>
+          ) : (
+            posts.map((post) => <PostCard key={post._id} post={post} />)
           )}
-          {loading && <p className='text-xl text-gray-500'>Loading...</p>}
-          {!loading &&
-            posts &&
-            posts.map((post) => <PostCard key={post._id} post={post} />)}
-          {showMore && (
-            <button
-              onClick={handleShowMore}
-              className='text-teal-500 text-lg hover:underline p-7 w-full'
-            >
-              Show More
-            </button>
-          )}
+          <div className='flex justify-center mt-4'>
+            {loadingMore ? (
+              <Spinner size="lg" />
+            ) : (
+              showMore && (
+                <button
+                  onClick={handleShowMore}
+                  className='text-teal-500 text-lg hover:underline p-7'
+                >
+                  Show More
+                </button>
+              )
+            )}
+          </div>
         </div>
       </div>
     </div>
