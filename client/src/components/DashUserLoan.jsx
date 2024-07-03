@@ -11,7 +11,7 @@ export default function DashUserLoan() {
   const [loading, setLoading] = useState(true);
   const [showMore, setShowMore] = useState(true);
   const [showModal, setShowModal] = useState(false);
-  const [userIdToDelete, setUserIdToDelete] = useState('');
+
 
   useEffect(() => {
     const fetchLoans = async () => {
@@ -91,15 +91,7 @@ export default function DashUserLoan() {
                   <Table.Cell>{loan.user.email}</Table.Cell>
                   <Table.Cell>{loan.prediction === 'Charged-Off' ? <FaTimes className='text-red-500' /> : <FaCheck className='text-green-500' />}</Table.Cell>
                   <Table.Cell>
-                    <span
-                      onClick={() => {
-                        setShowModal(true);
-                        setUserIdToDelete(loan._id);
-                      }}
-                      className='font-medium text-red-500 hover:underline cursor-pointer'
-                    >
-                      Delete
-                    </span>
+                    {loan.loan_status ? <FaCheck className='text-green-500'/>  : <FaTimes className='text-red-500' />}
                   </Table.Cell>
                 </Table.Row>
               ))}
@@ -114,25 +106,6 @@ export default function DashUserLoan() {
       ) : (
         <p>You have no loan yet!</p>
       )}
-      <Modal show={showModal} onClose={() => setShowModal(false)} popup size='md'>
-        <Modal.Header />
-        <Modal.Body>
-          <div className='text-center'>
-            <HiOutlineExclamationCircle className='h-14 w-14 text-gray-400 dark:text-gray-200 mb-4 mx-auto' />
-            <h3 className='mb-5 text-lg text-gray-500 dark:text-gray-400'>
-              Are you sure you want to delete this user?
-            </h3>
-            <div className='flex justify-center gap-4'>
-              <Button color='failure' >
-                Yes, I'm sure
-              </Button>
-              <Button color='gray' onClick={() => setShowModal(false)}>
-                No, cancel
-              </Button>
-            </div>
-          </div>
-        </Modal.Body>
-      </Modal>
     </div>
   );
 }

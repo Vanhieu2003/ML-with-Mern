@@ -1,3 +1,5 @@
+/* This JavaScript code defines three functions related to handling predictions and loans data. Here is
+a breakdown of what each part of the code does: */
 const Prediction = require('../models/predictionModel');
 const Loan = require('../models/predictionModel')
 const HttpError = require('../models/errorModel')
@@ -76,8 +78,30 @@ const getPredictionByUserId = async (req, res, next) => {
     }
 };
 
+
+const updateLoanStatus = async (req, res, next) => {
+    try {
+        const loanId = req.params.id;
+        const { loan_status } = req.body;
+
+        const loan = await Loan.findById(loanId);
+
+        if (!loan) {
+            return next(new HttpError('Loan not found', 404));
+        }
+
+        loan.loan_status = loan_status;
+        await loan.save();
+
+        res.status(200).json({ message: 'Loan status updated successfully!', loan });
+    } catch (error) {
+        return next(new HttpError(error.message, 500));
+    }
+};
+
 module.exports = {
     savePrediction,
     getPrediction,
-    getPredictionByUserId
+    getPredictionByUserId,
+    updateLoanStatus
 };

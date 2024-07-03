@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, {  useState } from 'react'
 import { Sidebar } from 'flowbite-react';
 import {
     HiUser,
@@ -8,18 +8,27 @@ import {
     HiChartPie,
     HiCreditCard
 } from 'react-icons/hi';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
+import { logoutUser } from '../redux/user/userSlice';
 
 
 export default function DashSidebar() {
-
+    const navigate = useNavigate();
     const dispatch = useDispatch();
     const { currentUser } = useSelector((state) => state.user);
 
     const [tab, setTab] = useState('');
-
+    const handleLogout = async () => {
+        try {
+            await dispatch(logoutUser()).unwrap();
+            localStorage.removeItem("persist:root");
+            navigate('/login');
+        } catch (error) {
+            console.error('Error logging out:', error);
+        }
+    };
 
     return (
         <Sidebar className='w-full md:w-56'>
@@ -106,7 +115,7 @@ export default function DashSidebar() {
                         active={tab === 'signout'}
                         icon={HiArrowSmRight}
                         className='cursor-pointer'
-
+                        onClick={handleLogout}
                     >
                         Sign Out
                     </Sidebar.Item>

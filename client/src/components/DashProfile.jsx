@@ -174,11 +174,6 @@ const DashProfile = () => {
           </Link>
         )}
       </form>
-
-      <div className="text-red-500 flex justify-between mt-5">
-        <span className="cursor-pointer">Xóa tài khoản</span>
-        <span className="cursor-pointer">Đăng xuất</span>
-      </div>
     </div>
   );
 };

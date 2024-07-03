@@ -22,7 +22,8 @@ const PredictionSchema = new mongoose.Schema({
   total_acc: Number,
   prediction: String,
   prediction_proba: [[Number]],
-  user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' } // Tham chiếu đến người dùng
+  user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+  loan_status: {type: Boolean, default: false},  // Tham chiếu đến người dùng
 }, { timestamps: true });
 
 module.exports = mongoose.model('Loan', PredictionSchema);

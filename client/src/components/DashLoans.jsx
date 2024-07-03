@@ -11,7 +11,8 @@ export default function DashLoans() {
   const [loading, setLoading] = useState(true);
   const [showMore, setShowMore] = useState(true);
   const [showModal, setShowModal] = useState(false);
-  const [userIdToDelete, setUserIdToDelete] = useState('');
+  const [loanIdToUpdate, setLoanIdToUpdate] = useState('');
+  const [loanStatusToUpdate, setLoanStatusToUpdate] = useState(false);
 
   useEffect(() => {
     const fetchLoans = async () => {
@@ -57,7 +58,27 @@ export default function DashLoans() {
     }
   };
 
- 
+  const handleUpdateLoanStatus = async () => {
+    try {
+      const res = await axios.patch(`${process.env.REACT_APP_BASE_URL}/loan/update-loan-status/${loanIdToUpdate}`, 
+      { loan_status: loanStatusToUpdate },
+      {
+          withCredentials: true,
+          headers: { Authorization: `Bearer ${currentUser.token}` }
+      });
+
+      if (res.status === 200) {
+          setLoans((prevLoans) => 
+              prevLoans.map((loan) => 
+                  loan._id === loanIdToUpdate ? { ...loan, loan_status: loanStatusToUpdate } : loan
+              )
+          );
+          setShowModal(false);
+      }
+    } catch (error) {
+        console.error(error.message);
+    }
+  };
 
   return (
     <div className='table-auto overflow-x-scroll md:mx-auto p-3 scrollbar scrollbar-track-slate-100 scrollbar-thumb-slate-300 dark:scrollbar-track-slate-700 dark:scrollbar-thumb-slate-500'>
@@ -91,15 +112,18 @@ export default function DashLoans() {
                   <Table.Cell>{loan.user.email}</Table.Cell>
                   <Table.Cell>{loan.prediction === 'Charged-Off' ? <FaTimes className='text-red-500' /> : <FaCheck className='text-green-500' />}</Table.Cell>
                   <Table.Cell>
-                    <span
-                      onClick={() => {
-                        setShowModal(true);
-                        setUserIdToDelete(loan._id);
-                      }}
-                      className='font-medium text-red-500 hover:underline cursor-pointer'
-                    >
-                      Delete
-                    </span>
+                    {loan.loan_status ? (
+                      <FaCheck className='text-green-500' />
+                    ) : (
+                      <FaTimes
+                        className='text-red-500 cursor-pointer'
+                        onClick={() => {
+                          setShowModal(true);
+                          setLoanIdToUpdate(loan._id);
+                          setLoanStatusToUpdate(true);
+                        }}
+                      />
+                    )}
                   </Table.Cell>
                 </Table.Row>
               ))}
@@ -120,10 +144,10 @@ export default function DashLoans() {
           <div className='text-center'>
             <HiOutlineExclamationCircle className='h-14 w-14 text-gray-400 dark:text-gray-200 mb-4 mx-auto' />
             <h3 className='mb-5 text-lg text-gray-500 dark:text-gray-400'>
-              Are you sure you want to delete this user?
+              Are you sure you want to change the loan status?
             </h3>
             <div className='flex justify-center gap-4'>
-              <Button color='failure' >
+              <Button color='failure' onClick={handleUpdateLoanStatus}>
                 Yes, I'm sure
               </Button>
               <Button color='gray' onClick={() => setShowModal(false)}>

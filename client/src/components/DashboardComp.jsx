@@ -173,7 +173,7 @@ export default function DashboardComp() {
             <Table.Head>
               <Table.HeadCell>Name User</Table.HeadCell>
               <Table.HeadCell>Email User</Table.HeadCell>
-              <Table.HeadCell>Loan Status</Table.HeadCell>
+              <Table.HeadCell>Loan Prediction</Table.HeadCell>
             </Table.Head>
             {loans &&
               loans.map((loans) => (

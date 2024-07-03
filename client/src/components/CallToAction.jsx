@@ -5,10 +5,11 @@ export default function CallToAction() {
     <div className='flex flex-col sm:flex-row p-3 border border-teal-500 justify-center items-center rounded-tl-3xl rounded-br-3xl text-center'>
         <div className="flex-1 justify-center flex flex-col">
             <h2 className='text-2xl'>
-                Want to learn more about JavaScript?
+            <span className='px-2 py-1 bg-gradient-to-r from-green-500 to-blue-500 rounded-lg text-white'>Smart</span>
+            Lending
             </h2>
             <p className='text-gray-500 my-2'>
-                Checkout these resources with 100 JavaScript Projects
+                Tài chính thông minh - tương lai vững vàng
             </p>
             <Button gradientDuoTone='greenToBlue' className='rounded-tl-xl rounded-bl-none'>
                 <a href="https://www.100jsprojects.com" target='_blank' rel='noopener noreferrer'>
