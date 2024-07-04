@@ -38,8 +38,9 @@ export default function DashSidebar() {
                     {currentUser && currentUser.isAdmin && (
                         <Link to='/dashboard?tab=dash'>
                             <Sidebar.Item
-                                active={tab === 'dash' || !tab}
+                                active={tab === 'dash' }
                                 icon={HiChartPie}
+                                labelColor="dark"
                                 as='div'
                             >
                                 Dashboard

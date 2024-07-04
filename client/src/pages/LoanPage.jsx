@@ -11,7 +11,7 @@ const LoanPage = () => {
         term: 60,
         int_rate: 14.65,
         installment: 337.86,
-        sub_grade: 'C1',
+        sub_grade: 'A1',
         emp_length: 10,
         home_ownership: 'RENT',
         annual_inc: 24000,
@@ -31,16 +31,17 @@ const LoanPage = () => {
     const [predictionResult, setPredictionResult] = useState(null);
     const [showModal, setShowModal] = useState(false);
 
-    const { currentUser } = useSelector((state) => state.user)
+    const { currentUser } = useSelector((state) => state.user);
     const navigate = useNavigate();
-    const token = currentUser?.token; // Lấy userId từ Redux store
+    const token = currentUser?.token; // Lấy token từ Redux store
+
     useEffect(() => {
         if (!token) {
           navigate('/login');
         }
-      }, [token, navigate]);
-    
-      const handleSubmit = async (e) => {
+    }, [token, navigate]);
+
+    const handleSubmit = async (e) => {
         e.preventDefault();
         try {
             const response = await axios.post('http://127.0.0.1:5000/predict', formData, {
@@ -58,7 +59,8 @@ const LoanPage = () => {
             const saveData = {
                 ...formData,
                 userId: currentUser?._id,
-                prediction: predictionText
+                prediction: predictionText,
+                prediction_proba: response.data.prediction_proba // Thêm prediction_proba vào dữ liệu lưu
             };
     
             const saveResponse = await axios.post('http://localhost:5000/api/loan/save-prediction', saveData, {
@@ -88,7 +90,6 @@ const LoanPage = () => {
             <Card className="w-full max-w-4xl">
                 <form onSubmit={handleSubmit}>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        {/* Các trường dữ liệu ở đây */}
                         <div className="mb-4">
                             <Label htmlFor="loan_amnt" value="Loan Amount:" />
                             <TextInput type="number" name="loan_amnt" value={formData.loan_amnt} onChange={handleChange} required />
@@ -107,7 +108,15 @@ const LoanPage = () => {
                         </div>
                         <div className="mb-4">
                             <Label htmlFor="sub_grade" value="Sub Grade:" />
-                            <TextInput type="text" name="sub_grade" value={formData.sub_grade} onChange={handleChange} required />
+                            <Select name="sub_grade" value={formData.sub_grade} onChange={handleChange} required>
+                                {['A', 'B', 'C', 'D', 'E', 'F', 'G'].map((letter) =>
+                                    [1, 2, 3, 4, 5].map((number) => (
+                                        <option key={`${letter}${number}`} value={`${letter}${number}`}>
+                                            {`${letter}${number}`}
+                                        </option>
+                                    ))
+                                )}
+                            </Select>
                         </div>
                         <div className="mb-4">
                             <Label htmlFor="emp_length" value="Employment Length:" />
@@ -141,9 +150,24 @@ const LoanPage = () => {
                             <Label htmlFor="delinq_2yrs" value="Delinquencies in 2 Years:" />
                             <TextInput type="number" name="delinq_2yrs" value={formData.delinq_2yrs} onChange={handleChange} required />
                         </div>
-                        <div className="mb-4">
+                         <div className="mb-4">
                             <Label htmlFor="purpose" value="Purpose:" />
-                            <TextInput type="text" name="purpose" value={formData.purpose} onChange={handleChange} required />
+                            <Select name="purpose" value={formData.purpose} onChange={handleChange} required>
+                                <option value="debt_consolidation">Debt Consolidation</option>
+                                <option value="credit_card">Credit Card</option>
+                                <option value="home_improvement">Home Improvement</option>
+                                <option value="major_purchase">Major Purchase</option>
+                                <option value="medical">Medical</option>
+                                <option value="small_business">Small Business</option>
+                                <option value="car">Car</option>
+                                <option value="moving">Moving</option>
+                                <option value="vacation">Vacation</option>
+                                <option value="house">House</option>
+                                <option value="wedding">Wedding</option>
+                                <option value="renewable_energy">Renewable Energy</option>
+                                <option value="educational">Educational</option>
+                                <option value="other">Other</option>
+                            </Select>
                         </div>
                         <div className="mb-4">
                             <Label htmlFor="dti" value="Debt-to-Income Ratio (DTI):" />

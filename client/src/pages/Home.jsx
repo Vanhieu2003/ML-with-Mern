@@ -26,6 +26,9 @@ const Home = () => {
         cung cấp các dịch vụ cho vay với nhiều ưu đãi hấp dẫn.
         Hãy đăng ký thử ở đây và trải nghiệm dịch vụ của chúng tôi.
       </p>
+      <p className='text-gray-500 text-xs sm:text-sm'>
+        Hãy theo dõi các tin tức chứng tôi cập nhật tại đây !!!
+      </p>
       <Link
         to='/search'
         className='text-xs sm:text-sm text-teal-500 font-bold hover:underline'

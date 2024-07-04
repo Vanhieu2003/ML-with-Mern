@@ -3,8 +3,8 @@ import { Link } from 'react-router-dom';
 import { Button } from 'flowbite-react';
 
 const PostCard = ({ post }) => {
-  const shortDescription = post.description.length > 100 ? post.description.substr(0, 100) + '...' : post.description;
-  const postTitle = post.title.length > 30 ? post.title.substr(0, 30) + '...' : post.title;
+  const shortDescription = post.description.length > 50 ? post.description.substr(0, 50) + '...' : post.description;
+  const postTitle = post.title.length > 40 ? post.title.substr(0, 40) + '...' : post.title;
 
   // Chuyển đổi định dạng ngày tháng
   const formattedDate = new Date(post.createdAt).toLocaleDateString('vi-VN', {
