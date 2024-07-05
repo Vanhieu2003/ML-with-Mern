@@ -160,9 +160,11 @@ export default function DashLoans() {
               <div className='space-y-4'>
                 {/* Thông tin người vay */}
                 <div>
-                  <h4 className='text-md font-semibold text-gray-900 dark:text-gray-300 mb-2'>Thông tin người vay</h4>
+                <h4 className='text-md font-semibold text-gray-900 dark:text-gray-300 mb-2'>Thông tin người vay</h4>
                   <p className='text-sm text-gray-500 dark:text-gray-400'>Name: {selectedLoan.user.name}</p>
                   <p className='text-sm text-gray-500 dark:text-gray-400'>Email: {selectedLoan.user.email}</p>
+                  <p className='text-sm text-gray-500 dark:text-gray-400'>Phone: {selectedLoan.user.phone}</p>
+                  <p className='text-sm text-gray-500 dark:text-gray-400'>Address: {selectedLoan.user.address}</p>
                   <p className='text-sm text-gray-500 dark:text-gray-400'>Date Created: {new Date(selectedLoan.createdAt).toLocaleDateString()}</p>
                 </div>
                 {/* Thông tin khoản vay */}
@@ -172,7 +174,7 @@ export default function DashLoans() {
                   <p className='text-sm text-gray-500 dark:text-gray-400'>Term: {selectedLoan.term}</p>
                   <p className='text-sm text-gray-500 dark:text-gray-400'>Interest Rate: {selectedLoan.int_rate}%</p>
                   <p className='text-sm text-gray-500 dark:text-gray-400'>Installment: {selectedLoan.installment}</p>
-                  <p className='text-sm text-gray-500 dark:text-gray-400'>Sub Grade: {selectedLoan.sub_grade}</p>
+                  <p className='text-sm text-gray-500 dark:text-gray-400'>Grade: {selectedLoan.grade}</p>
                   <p className='text-sm text-gray-500 dark:text-gray-400'>Employment Length: {selectedLoan.emp_length} years</p>
                   <p className='text-sm text-gray-500 dark:text-gray-400'>Home Ownership: {selectedLoan.home_ownership}</p>
                   <p className='text-sm text-gray-500 dark:text-gray-400'>Annual Income: {selectedLoan.annual_inc}</p>
@@ -187,10 +189,10 @@ export default function DashLoans() {
                   <p className='text-sm text-gray-500 dark:text-gray-400'>Revolving Balance: {selectedLoan.revol_bal}</p>
                   <p className='text-sm text-gray-500 dark:text-gray-400'>Revolving Utilization: {selectedLoan.revol_util}%</p>
                   <p className='text-sm text-gray-500 dark:text-gray-400'>Total Accounts: {selectedLoan.total_acc}</p>
+                  <p className='text-sm text-gray-500 dark:text-gray-400'>tot_cur_bal: {selectedLoan.tot_cur_bal}</p>
                   <p className='text-sm text-gray-500 dark:text-gray-400'>Prediction: <strong>{selectedLoan.prediction}</strong></p>
                   <p className='text-sm text-gray-500 dark:text-gray-400'>
-                  Prediction Probability: {formatPredictionProba(selectedLoan.prediction_proba)}
-</p>
+                  Prediction Probability: {formatPredictionProba(selectedLoan.prediction_proba)}</p>
                 </div>
               </div>
             </div>

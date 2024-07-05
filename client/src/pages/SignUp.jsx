@@ -9,6 +9,8 @@ const SignUp = () => {
     email: '',
     password: '',
     password2: '',
+    phone: '', // Thêm trường phone
+    address: '', // Thêm trường address
   });
 
   const [error, setError] = useState('');
@@ -105,6 +107,26 @@ const SignUp = () => {
                 placeholder="Confirm Password"
                 name="password2"
                 value={userData.password2}
+                onChange={changeInputHandler}
+              />
+            </div>
+            <div>
+              <Label value="Phone" />
+              <TextInput
+                type="text"
+                placeholder="Phone"
+                name="phone"
+                value={userData.phone}
+                onChange={changeInputHandler}
+              />
+            </div>
+            <div>
+              <Label value="Address" />
+              <TextInput
+                type="text"
+                placeholder="Address"
+                name="address"
+                value={userData.address}
                 onChange={changeInputHandler}
               />
             </div>

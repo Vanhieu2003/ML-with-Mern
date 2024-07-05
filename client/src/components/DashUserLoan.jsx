@@ -61,13 +61,7 @@ export default function DashUserLoan() {
     setShowModal(true);
   };
 
-  const formatPredictionProba = (proba) => {
-    if (!proba || !Array.isArray(proba) || !Array.isArray(proba[0])) {
-      return 'N/A';
-    }
-    // Convert [[Number]] to a string with numbers separated by commas
-    return proba[0].map(num => num.toFixed(2)).join(', ');
-  };
+
 
   return (
     <div className='table-auto overflow-x-scroll md:mx-auto p-3 scrollbar scrollbar-track-slate-100 scrollbar-thumb-slate-300 dark:scrollbar-track-slate-700 dark:scrollbar-thumb-slate-500'>
@@ -136,16 +130,18 @@ export default function DashUserLoan() {
                   <h4 className='text-md font-semibold text-gray-900 dark:text-gray-300 mb-2'>Thông tin người vay</h4>
                   <p className='text-sm text-gray-500 dark:text-gray-400'>Name: {selectedLoan.user.name}</p>
                   <p className='text-sm text-gray-500 dark:text-gray-400'>Email: {selectedLoan.user.email}</p>
+                  <p className='text-sm text-gray-500 dark:text-gray-400'>Phone: {selectedLoan.user.phone}</p>
+                  <p className='text-sm text-gray-500 dark:text-gray-400'>Address: {selectedLoan.user.address}</p>
                   <p className='text-sm text-gray-500 dark:text-gray-400'>Date Created: {new Date(selectedLoan.createdAt).toLocaleDateString()}</p>
                 </div>
-                {/* Thông tin khoản vay */}
-                <div>
+               {/* Thông tin khoản vay */}
+               <div>
                   <h4 className='text-md font-semibold text-gray-900 dark:text-gray-300 mb-2'>Thông tin khoản vay</h4>
                   <p className='text-sm text-gray-500 dark:text-gray-400'>Loan Amount: {selectedLoan.loan_amnt}</p>
                   <p className='text-sm text-gray-500 dark:text-gray-400'>Term: {selectedLoan.term}</p>
                   <p className='text-sm text-gray-500 dark:text-gray-400'>Interest Rate: {selectedLoan.int_rate}%</p>
                   <p className='text-sm text-gray-500 dark:text-gray-400'>Installment: {selectedLoan.installment}</p>
-                  <p className='text-sm text-gray-500 dark:text-gray-400'>Sub Grade: {selectedLoan.sub_grade}</p>
+                  <p className='text-sm text-gray-500 dark:text-gray-400'>Grade: {selectedLoan.grade}</p>
                   <p className='text-sm text-gray-500 dark:text-gray-400'>Employment Length: {selectedLoan.emp_length} years</p>
                   <p className='text-sm text-gray-500 dark:text-gray-400'>Home Ownership: {selectedLoan.home_ownership}</p>
                   <p className='text-sm text-gray-500 dark:text-gray-400'>Annual Income: {selectedLoan.annual_inc}</p>
@@ -160,10 +156,8 @@ export default function DashUserLoan() {
                   <p className='text-sm text-gray-500 dark:text-gray-400'>Revolving Balance: {selectedLoan.revol_bal}</p>
                   <p className='text-sm text-gray-500 dark:text-gray-400'>Revolving Utilization: {selectedLoan.revol_util}%</p>
                   <p className='text-sm text-gray-500 dark:text-gray-400'>Total Accounts: {selectedLoan.total_acc}</p>
+                  <p className='text-sm text-gray-500 dark:text-gray-400'>tot_cur_bal: {selectedLoan.tot_cur_bal}</p>
                   <p className='text-sm text-gray-500 dark:text-gray-400'>Prediction: <strong>{selectedLoan.prediction}</strong></p>
-                  <p className='text-sm text-gray-500 dark:text-gray-400'>
-                    Prediction Probability: {formatPredictionProba(selectedLoan.prediction_proba)}
-                  </p>
                 </div>
               </div>
             </div>

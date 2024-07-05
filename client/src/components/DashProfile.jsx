@@ -1,22 +1,31 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useSelector } from 'react-redux';
-import { Button, TextInput } from 'flowbite-react';
+import { useSelector, useDispatch } from 'react-redux';
+import { Button, TextInput, Toast, Modal } from 'flowbite-react';
 import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
+import { HiCheck, HiX, HiOutlineExclamationCircle } from 'react-icons/hi';
+import { logoutUser } from '../redux/user/userSlice';
 
 const DashProfile = () => {
   const { currentUser } = useSelector((state) => state.user);
   const [avatar, setAvatar] = useState('');
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
+  const [address, setAddress] = useState('');
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmNewPassword, setConfirmNewPassword] = useState('');
   const [error, setError] = useState('');
+  const [showModal, setShowModal] = useState(false);
+  const [toastMessage, setToastMessage] = useState('');
+  const [showToast, setShowToast] = useState(false);
+  const [toastType, setToastType] = useState('');
 
   const token = currentUser?.token;
   const navigate = useNavigate();
   const filePickerRef = useRef(null);
+  const dispatch = useDispatch();
 
   // Redirect to login page for any user who isn't logged in
   useEffect(() => {
@@ -33,9 +42,11 @@ const DashProfile = () => {
           `${process.env.REACT_APP_BASE_URL}/users/${currentUser.id}`,
           { withCredentials: true, headers: { Authorization: `Bearer ${token}` } }
         );
-        const { name, email, avatar } = response.data;
+        const { name, email, phone, address, avatar } = response.data;
         setName(name);
         setEmail(email);
+        setPhone(phone);
+        setAddress(address);
         setAvatar(avatar);
       } catch (error) {
         console.error('Error fetching user details:', error);
@@ -65,12 +76,16 @@ const DashProfile = () => {
   const updateUserDetails = async (e) => {
     e.preventDefault();
     try {
-      const userData = new FormData();
-      userData.set('name', name);
-      userData.set('email', email);
-      userData.set('currentPassword', currentPassword);
-      userData.set('newPassword', newPassword);
-      userData.set('confirmNewPassword', confirmNewPassword);
+      const userData = {};
+      if (name) userData.name = name;
+      if (email) userData.email = email;
+      if (phone) userData.phone = phone;
+      if (address) userData.address = address;
+      if (currentPassword && newPassword && confirmNewPassword) {
+        userData.currentPassword = currentPassword;
+        userData.newPassword = newPassword;
+        userData.confirmNewPassword = confirmNewPassword;
+      }
 
       const response = await axios.patch(
         `${process.env.REACT_APP_BASE_URL}/users/edit-user/${currentUser.id}`,
@@ -79,11 +94,18 @@ const DashProfile = () => {
       );
 
       if (response.status === 200) {
-        // Log user out
-        navigate('/');
+        if (currentPassword && newPassword && confirmNewPassword) {
+          setShowModal(true);
+        } else {
+          setToastMessage('Thông tin đã được cập nhật thành công');
+          setToastType('success');
+          setShowToast(true);
+        }
       }
     } catch (error) {
-      setError(error.response.data.message);
+      setToastMessage(error.response.data.message);
+      setToastType('error');
+      setShowToast(true);
     }
   };
 
@@ -93,6 +115,16 @@ const DashProfile = () => {
     if (file) {
       setAvatar(URL.createObjectURL(file));
       changeAvatarHandler(file);
+    }
+  };
+
+  const handleLogout = async () => {
+    try {
+      await dispatch(logoutUser()).unwrap();
+      localStorage.removeItem("persist:root");
+      navigate('/login');
+    } catch (error) {
+      console.error('Error logging out:', error);
     }
   };
 
@@ -131,6 +163,22 @@ const DashProfile = () => {
           placeholder="Email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
+          className="border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
+        <TextInput
+          type="text"
+          id="phone"
+          placeholder="Số điện thoại"
+          value={phone}
+          onChange={(e) => setPhone(e.target.value)}
+          className="border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
+        <TextInput
+          type="text"
+          id="address"
+          placeholder="Địa chỉ"
+          value={address}
+          onChange={(e) => setAddress(e.target.value)}
           className="border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
         <TextInput
@@ -174,6 +222,53 @@ const DashProfile = () => {
           </Link>
         )}
       </form>
+
+      {showToast && (
+        <Toast
+          className="fixed bottom-4 right-4"
+          onClick={() => setShowToast(false)}
+        >
+          {toastType === 'success' ? (
+            <>
+              <div className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-green-100 text-green-500 dark:bg-green-800 dark:text-green-200">
+                <HiCheck className="h-5 w-5" />
+              </div>
+              <div className="ml-3 text-sm font-normal">{toastMessage}</div>
+            </>
+          ) : (
+            <>
+              <div className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-red-100 text-red-500 dark:bg-red-800 dark:text-red-200">
+                <HiX className="h-5 w-5" />
+              </div>
+              <div className="ml-3 text-sm font-normal">{toastMessage}</div>
+            </>
+          )}
+          <Toast.Toggle />
+        </Toast>
+      )}
+
+      <Modal
+        show={showModal}
+        onClose={() => setShowModal(false)}
+      >
+        <Modal.Header />
+        <Modal.Body>
+          <div className="text-center">
+            <HiOutlineExclamationCircle className="mx-auto mb-4 h-14 w-14 text-gray-400 dark:text-gray-200" />
+            <h3 className="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
+              Bạn đã thay đổi mật khẩu thành công
+            </h3>
+            <div className="flex justify-center gap-4">
+              <Button color="failure" onClick={handleLogout}>
+                {"Đăng xuất"}
+              </Button>
+              <Button color="gray" onClick={() => setShowModal(false)}>
+                Duy trì đăng nhập
+              </Button>
+            </div>
+          </div>
+        </Modal.Body>
+      </Modal>
     </div>
   );
 };

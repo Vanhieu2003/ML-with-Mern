@@ -89,11 +89,7 @@ const PostPage = () => {
           {post?.category}
         </Button>
       </Link>
-      <img
-        src={post ? `${process.env.REACT_APP_ASSET_URL}/uploads/${post.thumbnail}` : ''}
-        alt={post?.title}
-        className='w-full h-auto max-h-[500px] object-cover mb-6'
-      />
+
       <div className='flex justify-between p-3 border-b border-slate-300 text-xs mb-6'>
         <span>{formattedDate}</span>
         <span className='italic'>{post ? `${(post.description.length / 1000).toFixed(0)} mins read` : ''}</span>

@@ -12,9 +12,10 @@ const User = require('../models/userModel');
 //UNPROTECTED
 const signupUser = async (req, res, next) => {
     try {
-        const { name, email, password, password2 } = req.body;
-        if (!name || !email || !password) {
-            return next(new HttpError("Fill in all fields", 422));
+        const { name, email, password, password2, phone, address } = req.body;
+    
+        if (!name || !email || !password || !phone || !address) {
+          return next(new HttpError('Fill in all fields', 422));
         }
 
         const newEmail = email.toLowerCase();
@@ -22,6 +23,10 @@ const signupUser = async (req, res, next) => {
         const emailExists = await User.findOne({ email: newEmail });
         if (emailExists) {
             return next(new HttpError("Email already exists.", 422));
+        }
+        const phoneExists = await User.findOne({ phone });
+        if (phoneExists) {
+          return next(new HttpError('Phone number already exists.', 422));
         }
 
         if ((password.trim()).length < 6) {
@@ -34,7 +39,13 @@ const signupUser = async (req, res, next) => {
 
         const salt = await bcrypt.genSalt(10);
         const hashedPass = await bcrypt.hash(password, salt);
-        const newUser = await User.create({ name, email: newEmail, password: hashedPass });
+        const newUser = await User.create({
+            name,
+            email: newEmail,
+            password: hashedPass,
+            phone,
+            address
+          });
         res.status(201).json({ message: `User ${newUser.email} signed up` });
 
     } catch (error) {
@@ -141,44 +152,57 @@ const changeAvatar = async (req, res, next) => {
 //PROTECTED
 const editUser = async (req, res, next) => {
     try {
-        const { name, email, currentPassword, newPassword, confirmNewPassword } = req.body;
-        if (!name || !email || !currentPassword || !newPassword || !confirmNewPassword) {
-            return next(new HttpError("Fill in all fields.", 422));
-        }
-
-        const user = await User.findById(req.user.id);
-        if (!user) {
-            return next(new HttpError("User not found.", 403));
-        }
-
+      const { name, email, phone, address, currentPassword, newPassword, confirmNewPassword } = req.body;
+  
+      const user = await User.findById(req.user.id);
+      if (!user) {
+        return next(new HttpError("User not found.", 403));
+      }
+  
+      if (email) {
         const emailExists = await User.findOne({ email });
         if (emailExists && emailExists._id.toString() !== req.user.id) {
-            return next(new HttpError("Email already exists", 422));
+          return next(new HttpError("Email already exists", 422));
         }
-
+      }
+  
+      if (phone) {
+        const phoneExists = await User.findOne({ phone });
+        if (phoneExists && phoneExists._id.toString() !== req.user.id) {
+          return next(new HttpError("Phone number already exists", 422));
+        }
+      }
+  
+      const updateFields = {};
+      if (name) updateFields.name = name;
+      if (email) updateFields.email = email;
+      if (phone) updateFields.phone = phone;
+      if (address) updateFields.address = address;
+  
+      if (currentPassword && newPassword && confirmNewPassword) {
         const validateUserPassword = await bcrypt.compare(currentPassword, user.password);
         if (!validateUserPassword) {
-            return next(new HttpError("Invalid current password", 422));
+          return next(new HttpError("Invalid current password", 422));
         }
-
+  
         if (newPassword !== confirmNewPassword) {
-            return next(new HttpError("New passwords don't match.", 422));
+          return next(new HttpError("New passwords don't match.", 422));
         }
-
+  
         const salt = await bcrypt.genSalt(10);
         const hash = await bcrypt.hash(newPassword, salt);
-
-        const newInfo = await User.findByIdAndUpdate(req.user.id, {
-            name,
-            email,
-            password: hash
-        }, { new: true });
-
-        res.status(200).json(newInfo);
+        updateFields.password = hash;
+      } else if (currentPassword || newPassword || confirmNewPassword) {
+        return next(new HttpError("To change the password, all password fields must be filled.", 422));
+      }
+  
+      const newInfo = await User.findByIdAndUpdate(req.user.id, updateFields, { new: true });
+  
+      res.status(200).json(newInfo);
     } catch (error) {
-        return next(new HttpError(error.message, 500));
+      return next(new HttpError(error.message, 500));
     }
-};
+  };
 
 //============ Get Authors
 //GET : api/users/authors

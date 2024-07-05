@@ -1,9 +1,9 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { Modal, Table, Button, Spinner } from 'flowbite-react';
+import { Modal, Table, Button, Spinner, Toast } from 'flowbite-react';
 import { FaCheck, FaTimes } from 'react-icons/fa';
-import { HiOutlineExclamationCircle } from 'react-icons/hi';
+import { HiOutlineExclamationCircle, HiX } from 'react-icons/hi';
 
 export default function DashPUsers() {
   const { currentUser } = useSelector((state) => state.user);
@@ -12,6 +12,8 @@ export default function DashPUsers() {
   const [showMore, setShowMore] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [userIdToDelete, setUserIdToDelete] = useState('');
+  const [showToast, setShowToast] = useState(false);
+  const [toastMessage, setToastMessage] = useState('');
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -66,6 +68,8 @@ export default function DashPUsers() {
       });
       if (res.status === 200) {
         setUsers((prev) => prev.filter((user) => user._id !== userIdToDelete));
+        setToastMessage('Xóa người dùng thành công');
+        setShowToast(true);
       } else {
         console.error(res.data.message);
       }
@@ -73,7 +77,6 @@ export default function DashPUsers() {
       console.error(error.message);
     }
   };
-
 
   return (
     <div className='table-auto overflow-x-scroll md:mx-auto p-3 scrollbar scrollbar-track-slate-100 scrollbar-thumb-slate-300 dark:scrollbar-track-slate-700 dark:scrollbar-thumb-slate-500'>
@@ -130,6 +133,17 @@ export default function DashPUsers() {
       ) : (
         <p>You have no users yet!</p>
       )}
+
+      {showToast && (
+        <Toast onClick={() => setShowToast(false)}>
+          <div className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-green-100 text-green-500 dark:bg-green-800 dark:text-green-200">
+            <HiX className="h-5 w-5" />
+          </div>
+          <div className="ml-3 text-sm font-normal">{toastMessage}</div>
+          <Toast.Toggle />
+        </Toast>
+      )}
+
       <Modal show={showModal} onClose={() => setShowModal(false)} popup size='md'>
         <Modal.Header />
         <Modal.Body>
