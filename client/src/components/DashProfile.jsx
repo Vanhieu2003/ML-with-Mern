@@ -13,6 +13,11 @@ const DashProfile = () => {
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
   const [address, setAddress] = useState('');
+  const [id, setId] = useState('');
+  const [nationality, setNationality] = useState('');
+  const [sex, setSex] = useState('');
+  const [home, setHome] = useState('');
+  const [dob, setDOB] = useState('');
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmNewPassword, setConfirmNewPassword] = useState('');
@@ -42,12 +47,17 @@ const DashProfile = () => {
           `${process.env.REACT_APP_BASE_URL}/users/${currentUser.id}`,
           { withCredentials: true, headers: { Authorization: `Bearer ${token}` } }
         );
-        const { name, email, phone, address, avatar } = response.data;
+        const { name, email, phone, address, avatar, sex, nationality, dob, home, id } = response.data;
         setName(name);
         setEmail(email);
         setPhone(phone);
         setAddress(address);
         setAvatar(avatar);
+        setSex(sex);
+        setNationality(nationality);
+        setHome(home);
+        setDOB(dob);
+        setId(id);
       } catch (error) {
         console.error('Error fetching user details:', error);
       }
@@ -86,6 +96,10 @@ const DashProfile = () => {
         userData.newPassword = newPassword;
         userData.confirmNewPassword = confirmNewPassword;
       }
+      if (id) userData.id = id;
+      if (home) userData.home = home;
+      if (sex) userData.sex = sex;
+      if (nationality) userData.nationality = nationality;
 
       const response = await axios.patch(
         `${process.env.REACT_APP_BASE_URL}/users/edit-user/${currentUser.id}`,
@@ -128,60 +142,179 @@ const DashProfile = () => {
     }
   };
 
+  const validateInput = () => {
+    // Regex cho ngày sinh (dd/mm/yyyy)
+    const dobPattern = /^(\d{2})\/(\d{2})\/(\d{4})$/; // dd/mm/yyyy
+    const idPattern = /^\d{12}$/; // 12 chữ số
+  
+    // Kiểm tra định dạng ngày sinh
+    if (dob && !dobPattern.test(dob)) {
+      setError('Ngày sinh phải theo định dạng dd/mm/yyyy');
+      return false;
+    }
+  
+    // Kiểm tra định dạng mã số CCCD
+    if (id && !idPattern.test(id)) {
+      setError('Mã số CCCD phải là 12 số');
+      return false;
+    }
+  
+    setError('');
+    return true;
+  };
+
   return (
-    <div className="max-w-lg mx-auto p-3 w-full">
+     <div className="max-w-6xl mx-auto p-3 w-full">
       <h1 className="my-7 text-center font-semibold text-3xl">Thông tin cá nhân</h1>
-      <form className="flex flex-col gap-4">
-        <div className="w-32 h-32 self-center cursor-pointer shadow-md overflow-hidden rounded-full relative"
-          onClick={() => filePickerRef.current.click()}
-        >
-          <img
-            src={avatar ? `${process.env.REACT_APP_ASSET_URL}/uploads/${avatar}` : ''}
-            alt="User Avatar"
-            className="rounded-full w-full h-full object-cover border-8 border-gray-300"
-          />
-          <input
-            type="file"
-            accept="image/*"
-            onChange={handleImageChange}
-            ref={filePickerRef}
-            className="hidden"
-          />
+      <form className="flex flex-col items-center gap-4" onSubmit={updateUserDetails}>
+        <div className="flex flex-col items-center">
+          <div
+            className="w-32 h-32 cursor-pointer shadow-md overflow-hidden rounded-full relative"
+            onClick={() => filePickerRef.current.click()}
+          >
+            <img
+              src={avatar ? `${process.env.REACT_APP_ASSET_URL}/uploads/${avatar}` : ''}
+              alt="User Avatar"
+              className="rounded-full w-full h-full object-cover border-8 border-gray-300"
+            />
+            <input
+              type="file"
+              accept="image/*"
+              onChange={handleImageChange}
+              ref={filePickerRef}
+              className="hidden"
+            />
+          </div>
+          <p className="mt-2 text-sm text-gray-500">Nhấp để thay đổi ảnh đại diện</p>
         </div>
 
-        <TextInput
-          type="text"
-          id="username"
-          placeholder="Tên đầy đủ"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          className="border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
-        <TextInput
-          type="email"
-          id="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          className="border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
-        <TextInput
-          type="text"
-          id="phone"
-          placeholder="Số điện thoại"
-          value={phone}
-          onChange={(e) => setPhone(e.target.value)}
-          className="border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
-        <TextInput
-          type="text"
-          id="address"
-          placeholder="Địa chỉ"
-          value={address}
-          onChange={(e) => setAddress(e.target.value)}
-          className="border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
-        <TextInput
+        <div className="grid grid-cols-2 gap-4 w-full">
+          <div className="space-y-4">
+            <label htmlFor="id" className="block text-sm font-medium text-gray-700">
+              Mã số CCCD
+            </label>
+            <TextInput
+              type="text"
+              id="id"
+              placeholder="Mã số CCCD"
+              value={id}
+              onChange={(e) => setId(e.target.value)}
+              maxLength="12"
+              className="border border-gray-300 px-3 py-2 rounded-md w-full"
+              readOnly
+            />
+
+            <label htmlFor="username" className="block text-sm font-medium text-gray-700">
+              Tên đầy đủ
+            </label>
+            <TextInput
+              type="text"
+              id="username"
+              placeholder="Tên đầy đủ"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              className="border border-gray-300 px-3 py-2 rounded-md w-full"
+              readOnly
+            />
+
+            <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+              Email
+            </label>
+            <TextInput
+              type="email"
+              id="email"
+              placeholder="Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="border border-gray-300 px-3 py-2 rounded-md w-full"
+              readOnly
+            />
+
+            <label htmlFor="phone" className="block text-sm font-medium text-gray-700">
+              Số điện thoại
+            </label>
+            <TextInput
+              type="text"
+              id="phone"
+              placeholder="Số điện thoại"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              maxLength="15"
+              className="border border-gray-300 px-3 py-2 rounded-md w-full"
+    
+            />
+
+            <label htmlFor="address" className="block text-sm font-medium text-gray-700">
+              Địa chỉ
+            </label>
+            <TextInput
+              type="text"
+              id="address"
+              placeholder="Địa chỉ"
+              value={address}
+              onChange={(e) => setAddress(e.target.value)}
+              className="border border-gray-300 px-3 py-2 rounded-md w-full"
+
+            />
+
+            <label htmlFor="nationality" className="block text-sm font-medium text-gray-700">
+              Quốc tịch
+            </label>
+            <TextInput
+              type="text"
+              id="nationality"
+              placeholder="Quốc tịch"
+              value={nationality}
+              onChange={(e) => setNationality(e.target.value)}
+              className="border border-gray-300 px-3 py-2 rounded-md w-full"
+              readOnly
+            />
+          </div>
+
+          <div className="space-y-4">
+            <label htmlFor="sex" className="block text-sm font-medium text-gray-700">
+              Giới tính
+            </label>
+            <TextInput
+              type="text"
+              id="sex"
+              placeholder="Giới tính"
+              value={sex}
+              onChange={(e) => setSex(e.target.value)}
+              className="border border-gray-300 px-3 py-2 rounded-md w-full"
+              readOnly
+            />
+
+            <label htmlFor="dob" className="block text-sm font-medium text-gray-700">
+              Ngày sinh
+            </label>
+            <TextInput
+              type="text"
+              id="dob"
+              placeholder="Ngày sinh (dd/mm/yyyy)"
+              value={dob}
+              onChange={(e) => setDOB(e.target.value)}
+              className="border border-gray-300 px-3 py-2 rounded-md w-full"
+              readOnly
+            />
+
+            <label htmlFor="home" className="block text-sm font-medium text-gray-700">
+              Quê quán
+            </label>
+            <TextInput
+              type="text"
+              id="home"
+              placeholder="Quê quán"
+              value={home}
+              onChange={(e) => setHome(e.target.value)}
+              className="border border-gray-300 px-3 py-2 rounded-md w-full"
+              readOnly
+            />
+
+            <label htmlFor="currentPassword" className="block text-sm font-medium text-gray-700">
+              Mật khẩu hiện tại
+            </label>
+            <TextInput
           type="password"
           id="currentPassword"
           placeholder="Mật khẩu hiện tại"
@@ -189,7 +322,11 @@ const DashProfile = () => {
           onChange={(e) => setCurrentPassword(e.target.value)}
           className="border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
-        <TextInput
+
+            <label htmlFor="newPassword" className="block text-sm font-medium text-gray-700">
+              Mật khẩu mới
+            </label>
+            <TextInput
           type="password"
           id="newPassword"
           placeholder="Mật khẩu mới"
@@ -197,7 +334,11 @@ const DashProfile = () => {
           onChange={(e) => setNewPassword(e.target.value)}
           className="border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
-        <TextInput
+
+            <label htmlFor="confirmNewPassword" className="block text-sm font-medium text-gray-700">
+              Xác nhận mật khẩu mới
+            </label>
+            <TextInput
           type="password"
           id="confirmNewPassword"
           placeholder="Xác nhận mật khẩu mới"
@@ -205,22 +346,31 @@ const DashProfile = () => {
           onChange={(e) => setConfirmNewPassword(e.target.value)}
           className="border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
+          </div>
+        </div>
 
-        {error && <p className="form__error-message text-red-500">{error}</p>}
-        <Button type="submit" gradientDuoTone="purpleToBlue" onClick={updateUserDetails} className="btn bg-purple-500 text-white hover:bg-purple-600 mt-2">
-          Cập nhật
-        </Button>
-        {currentUser.isAdmin && (
-          <Link to={'/create-post'}>
-            <Button
-              type='button'
-              gradientDuoTone='purpleToPink'
-              className='w-full'
-            >
-              Create a post
-            </Button>
-          </Link>
+        {error && (
+          <div className="text-red-500 font-medium text-sm mt-2">
+            {error}
+          </div>
         )}
+
+        <div className="flex flex-col items-center gap-4 w-full">
+          <Button type="submit" gradientDuoTone="purpleToBlue" onClick={updateUserDetails} className="btn bg-purple-500 text-white hover:bg-purple-600 mt-2">
+            Cập nhật
+          </Button>
+          {currentUser.isAdmin && (
+            <Link to={'/create-post'}>
+              <Button
+                type='button'
+                gradientDuoTone='purpleToPink'
+                className='w-full'
+              >
+                Create a post
+              </Button>
+            </Link>
+          )}
+        </div>
       </form>
 
       {showToast && (
@@ -262,9 +412,11 @@ const DashProfile = () => {
               <Button color="failure" onClick={handleLogout}>
                 {"Đăng xuất"}
               </Button>
+              <Link to='/'>
               <Button color="gray" onClick={() => setShowModal(false)}>
                 Duy trì đăng nhập
               </Button>
+              </Link>
             </div>
           </div>
         </Modal.Body>

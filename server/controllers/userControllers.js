@@ -160,33 +160,65 @@ const changeAvatar = async (req, res, next) => {
 //PROTECTED
 const editUser = async (req, res, next) => {
     try {
-      const { name, email, phone, address, currentPassword, newPassword, confirmNewPassword } = req.body;
+      const {
+        name,
+        email,
+        phone,
+        address,
+        id, 
+        sex,
+        dob, 
+        nationality,
+        home,
+        currentPassword,
+        newPassword,
+        confirmNewPassword,
+      } = req.body;
   
+      // Tìm người dùng theo ID
       const user = await User.findById(req.user.id);
       if (!user) {
-        return next(new HttpError("User not found.", 403));
+        return next(new HttpError("Người dùng không tồn tại.", 403));
       }
   
-      if (email) {
+      // Kiểm tra sự tồn tại của email
+      if (email && email !== user.email) {
         const emailExists = await User.findOne({ email });
         if (emailExists && emailExists._id.toString() !== req.user.id) {
-          return next(new HttpError("Email already exists", 422));
+          return next(new HttpError("Email đã tồn tại", 422));
         }
       }
   
-      if (phone) {
+      // Kiểm tra sự tồn tại của số điện thoại
+      if (phone && phone !== user.phone) {
         const phoneExists = await User.findOne({ phone });
         if (phoneExists && phoneExists._id.toString() !== req.user.id) {
-          return next(new HttpError("Phone number already exists", 422));
+          return next(new HttpError("Số điện thoại đã tồn tại", 422));
         }
       }
   
+      // Kiểm tra mã số CCCD
+      if (id && id !== user.id) {
+        const idExists = await User.findOne({ id });
+        if (idExists && idExists._id.toString() !== req.user.id) {
+          return next(new HttpError("Mã số CCCD đã tồn tại", 422));
+        }
+      }
+  
+      // Tạo đối tượng chứa các trường cần cập nhật
       const updateFields = {};
       if (name) updateFields.name = name;
       if (email) updateFields.email = email;
       if (phone) updateFields.phone = phone;
       if (address) updateFields.address = address;
+      if (id) updateFields.id = id; // cập nhật mã số CCCD
+      if (sex) updateFields.sex = sex;
+      if (dob) updateFields.dob = dob;
+      if (home) updateFields.home = home; 
+      if (nationality) updateFields.nationality = nationality;
   
+      // Xử lý cập nhật mật khẩu nếu có
+
       if (currentPassword && newPassword && confirmNewPassword) {
         const validateUserPassword = await bcrypt.compare(currentPassword, user.password);
         if (!validateUserPassword) {
@@ -211,6 +243,8 @@ const editUser = async (req, res, next) => {
       return next(new HttpError(error.message, 500));
     }
   };
+
+  
 
 //============ Get Authors
 //GET : api/users/authors
