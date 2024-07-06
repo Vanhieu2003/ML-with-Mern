@@ -12,9 +12,9 @@ const User = require('../models/userModel');
 //UNPROTECTED
 const signupUser = async (req, res, next) => {
     try {
-        const { name, email, password, password2, phone, address } = req.body;
+        const { name, email, password, password2, phone, address, home, sex, dob,  nationality,id } = req.body;
     
-        if (!name || !email || !password || !phone || !address) {
+        if (!name || !email || !password || !phone || !address || !id || !home || !sex || !dob || !nationality ) {
           return next(new HttpError('Fill in all fields', 422));
         }
 
@@ -26,6 +26,11 @@ const signupUser = async (req, res, next) => {
         }
         const phoneExists = await User.findOne({ phone });
         if (phoneExists) {
+          return next(new HttpError('Phone number already exists.', 422));
+        }
+
+        const idExists = await User.findOne({ id });
+        if (idExists) {
           return next(new HttpError('Phone number already exists.', 422));
         }
 
@@ -44,7 +49,10 @@ const signupUser = async (req, res, next) => {
             email: newEmail,
             password: hashedPass,
             phone,
-            address
+            id,
+            sex,
+            dob,
+            nationality,home,address
           });
         res.status(201).json({ message: `User ${newUser.email} signed up` });
 
