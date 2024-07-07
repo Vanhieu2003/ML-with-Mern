@@ -3,6 +3,7 @@ const {Schema,model} = require('mongoose')
 const userSchema = new Schema ({
     name: {type: String,require:true},
     id:{type: String,require:true},
+    cccdImage:{type:String},
     email: {type: String,require:true},
     password: {type: String,require:true},
     phone: {type: String,require:true},
@@ -13,6 +14,7 @@ const userSchema = new Schema ({
     nationality:{type: String,require:true},
     avatar: {type: String},
     posts: {type: Number,default:0},
+    isKYC: {type: Boolean, default: false},
     isAdmin: {type: Boolean, default: false}, //Thêm trường này
 }, {timestamps:true})
 

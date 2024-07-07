@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Button, TextInput, Toast, Modal } from 'flowbite-react';
 import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
+import { FaCheck, FaTimes } from 'react-icons/fa';
 import { HiCheck, HiX, HiOutlineExclamationCircle } from 'react-icons/hi';
 import { logoutUser } from '../redux/user/userSlice';
 
@@ -26,7 +27,7 @@ const DashProfile = () => {
   const [toastMessage, setToastMessage] = useState('');
   const [showToast, setShowToast] = useState(false);
   const [toastType, setToastType] = useState('');
-
+  const [isKYC, setIsKYC] = useState(false); 
   const token = currentUser?.token;
   const navigate = useNavigate();
   const filePickerRef = useRef(null);
@@ -47,7 +48,7 @@ const DashProfile = () => {
           `${process.env.REACT_APP_BASE_URL}/users/${currentUser.id}`,
           { withCredentials: true, headers: { Authorization: `Bearer ${token}` } }
         );
-        const { name, email, phone, address, avatar, sex, nationality, dob, home, id } = response.data;
+        const { name, email, phone, address, avatar, sex, nationality, dob, home, id,isKYC } = response.data;
         setName(name);
         setEmail(email);
         setPhone(phone);
@@ -58,6 +59,7 @@ const DashProfile = () => {
         setHome(home);
         setDOB(dob);
         setId(id);
+        setIsKYC(isKYC);
       } catch (error) {
         console.error('Error fetching user details:', error);
       }
@@ -166,6 +168,20 @@ const DashProfile = () => {
   return (
      <div className="max-w-6xl mx-auto p-3 w-full">
       <h1 className="my-7 text-center font-semibold text-3xl">Thông tin cá nhân</h1>
+      {/* Thông báo xác minh tài khoản */}
+      <div className="mb-3 text-center">
+        {isKYC ? (
+          <div className="flex items-center justify-center text-green-500">
+            <FaCheck className="text-lg mr-2" />
+            <span>Tài khoản đã được xác minh</span>
+          </div>
+        ) : (
+          <div className="flex items-center justify-center text-red-500">
+            <FaTimes className="text-lg mr-2" />
+            <span>Tài khoản chưa được xác minh</span>
+          </div>
+        )}
+      </div>
       <form className="flex flex-col items-center gap-4" onSubmit={updateUserDetails}>
         <div className="flex flex-col items-center">
           <div

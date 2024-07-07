@@ -47,12 +47,15 @@ const LoanPage = () => {
     const { currentUser } = useSelector((state) => state.user);
     const navigate = useNavigate();
     const token = currentUser?.token;
-
     useEffect(() => {
         if (!token) {
+            // Nếu không có token, chuyển hướng đến trang đăng nhập
             navigate('/login');
+        } else if (currentUser?.isKYC === false && currentUser?.isAdmin === false) {
+            // Nếu người dùng không hoàn tất KYC và không phải là quản trị viên
+            navigate('/unauthorized');
         }
-    }, [token, navigate]);
+    }, [token, currentUser, navigate]);
 
     useEffect(() => {
         // Tính toán khoản trả góp hàng tháng

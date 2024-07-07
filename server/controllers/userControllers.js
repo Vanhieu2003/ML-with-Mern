@@ -12,29 +12,33 @@ const User = require('../models/userModel');
 //UNPROTECTED
 const signupUser = async (req, res, next) => {
     try {
-        const { name, email, password, password2, phone, address, home, sex, dob,  nationality,id } = req.body;
-    
-        if (!name || !email || !password || !phone || !address || !id || !home || !sex || !dob || !nationality ) {
-          return next(new HttpError('Fill in all fields', 422));
+        const { name, email, password, password2, phone, address, home, sex, dob, nationality, id } = req.body;
+        const cccdImage = req.files?.cccdImage;
+
+        // Kiểm tra dữ liệu đầu vào
+        if (!name || !email || !password || !phone || !address || !id || !home || !sex || !dob || !nationality || !cccdImage) {
+            return next(new HttpError('Fill in all fields', 422));
         }
 
+        // Kiểm tra email và phone
         const newEmail = email.toLowerCase();
-
         const emailExists = await User.findOne({ email: newEmail });
         if (emailExists) {
             return next(new HttpError("Email already exists.", 422));
         }
         const phoneExists = await User.findOne({ phone });
         if (phoneExists) {
-          return next(new HttpError('Phone number already exists.', 422));
+            return next(new HttpError('Phone number already exists.', 422));
         }
 
+        // Kiểm tra ID
         const idExists = await User.findOne({ id });
         if (idExists) {
-          return next(new HttpError('Phone number already exists.', 422));
+            return next(new HttpError('ID already exists.', 422));
         }
 
-        if ((password.trim()).length < 6) {
+        // Kiểm tra password
+        if (password.trim().length < 6) {
             return next(new HttpError("Password should be at least 6 characters.", 422));
         }
 
@@ -42,25 +46,49 @@ const signupUser = async (req, res, next) => {
             return next(new HttpError("Passwords don't match.", 422));
         }
 
-        const salt = await bcrypt.genSalt(10);
-        const hashedPass = await bcrypt.hash(password, salt);
-        const newUser = await User.create({
-            name,
-            email: newEmail,
-            password: hashedPass,
-            phone,
-            id,
-            sex,
-            dob,
-            nationality,home,address
-          });
-        res.status(201).json({ message: `User ${newUser.email} signed up` });
+        // Kiểm tra kích thước và lưu ảnh CCCD
+        if (cccdImage.size > 5 * 1024 * 1024) { // 5 MB
+            return next(new HttpError("CCCD image too big. File should be less than 5MB", 422));
+        }
 
+        // Đổi tên file
+        let fileName = cccdImage.name;
+        let splittedFilename = fileName.split('.');
+        let newFilename = splittedFilename[0] + '-' + uuid() + "." + splittedFilename[splittedFilename.length - 1];
+        const uploadPath = path.join(__dirname, '..', 'uploads', newFilename);
+
+        cccdImage.mv(uploadPath, async (err) => {
+            if (err) {
+                return next(new HttpError('Failed to upload image.', 500));
+            }
+
+            // Tạo người dùng mới với thông tin
+            const salt = await bcrypt.genSalt(10);
+            const hashedPass = await bcrypt.hash(password, salt);
+            const newUser = await User.create({
+                name,
+                email: newEmail,
+                password: hashedPass,
+                phone,
+                id,
+                sex,
+                dob,
+                nationality,
+                home,
+                address,
+                cccdImage: newFilename // Lưu tên file ảnh CCCD vào cơ sở dữ liệu
+            });
+
+            if (!newUser) {
+                return next(new HttpError("User couldn't be created", 422));
+            }
+
+            res.status(201).json({ message: `User ${newUser.email} signed up` });
+        });
     } catch (error) {
         return next(new HttpError("User Sign Up failed.", 422));
     }
 };
-
 //============ Login a user
 //POST : api/users/login
 //UNPROTECTED
@@ -82,10 +110,10 @@ const loginUser = async (req, res, next) => {
             return next(new HttpError("Invalid credentials.", 422));
         }
 
-        const { _id: id, name, isAdmin } = user;
-        const token = jwt.sign({ id, name, isAdmin }, process.env.JWT_SECRET, { expiresIn: "1d" });
+        const { _id: id, name, isAdmin, isKYC } = user;
+        const token = jwt.sign({ id, name, isAdmin, isKYC }, process.env.JWT_SECRET, { expiresIn: "1d" });
 
-        res.status(200).json({ token, id, name, isAdmin });
+        res.status(200).json({ token, id, name, isAdmin, isKYC });
 
     } catch (error) {
         return next(new HttpError("Login failed. Please check your credentials.", 422));
