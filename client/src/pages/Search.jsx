@@ -112,7 +112,7 @@ export default function Search() {
         <form className='flex flex-col gap-8' onSubmit={handleSubmit}>
           <div className='flex items-center gap-2'>
             <label className='whitespace-nowrap font-semibold'>
-              Search Term:
+              Từ khóa:
             </label>
             <TextInput
               placeholder='Search...'
@@ -123,14 +123,14 @@ export default function Search() {
             />
           </div>
           <div className='flex items-center gap-2'>
-            <label className='font-semibold'>Sort:</label>
+            <label className='font-semibold'>Lọc theo:</label>
             <Select onChange={handleChange} value={sidebarData.sort} id='sort'>
-              <option value='desc'>Latest</option>
-              <option value='asc'>Oldest</option>
+              <option value='desc'>Bài viết mới</option>
+              <option value='asc'>Bài viết cũ</option>
             </Select>
           </div>
           <div className='flex items-center gap-2'>
-            <label className='font-semibold'>Category:</label>
+            <label className='font-semibold'>Loại bài viết:</label>
             <Select
               onChange={handleChange}
               value={sidebarData.category}
@@ -146,13 +146,13 @@ export default function Search() {
             </Select>
           </div>
           <Button type='submit' outline gradientDuoTone='greenToBlue'>
-            Apply Filters
+            Lọc
           </Button>
         </form>
       </div>
       <div className='w-full'>
         <h1 className='text-3xl font-semibold sm:border-b border-gray-500 p-3 mt-5'>
-          Posts results:
+          Kết quả tìm kiếm:
         </h1>
         <div className='p-7 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4'>
           {loading ? (
@@ -160,7 +160,7 @@ export default function Search() {
               <Spinner size="lg" />
             </div>
           ) : posts.length === 0 ? (
-            <p className='text-xl text-gray-500 col-span-full'>No posts found.</p>
+            <p className='text-xl text-gray-500 col-span-full'>Không có bài viết nào được tìm thấy.</p>
           ) : (
             posts.map((post) => <PostCard key={post._id} post={post} />)
           )}

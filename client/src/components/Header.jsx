@@ -110,15 +110,15 @@ export default function Header() {
                             <span className='block text-sm font-medium truncate'>{email}</span>
                         </Dropdown.Header>
                         <Link to='/dashboard?tab=profile'>
-                            <Dropdown.Item>Profile</Dropdown.Item>
+                            <Dropdown.Item>Thông tin</Dropdown.Item>
                         </Link>
                         <Dropdown.Divider />
-                        <Dropdown.Item onClick={handleLogout}>Logout</Dropdown.Item>
+                        <Dropdown.Item onClick={handleLogout}>Đăng xuất</Dropdown.Item>
                     </Dropdown>
                 ) : (
                     <Link to="/login">
                         <Button gradientDuoTone="greenToBlue" outline>
-                            Login
+                            Đăng nhập
                         </Button>
                     </Link>
                 )}
@@ -126,10 +126,10 @@ export default function Header() {
             </div>
             <Navbar.Collapse>
                 <Navbar.Link active={pathname === "/"} as='div'>
-                    <Link to='/'>Home</Link>
+                    <Link to='/'>Trang chủ</Link>
                 </Navbar.Link>
                 <Navbar.Link active={pathname === "/news"} as='div'>
-                    <Link to='/news'>News</Link>
+                    <Link to='/news'>Tin tức</Link>
                 </Navbar.Link>
                 <Navbar.Link active={pathname === "/about"} as='div'>
                     <Link to='/about'>About</Link>
@@ -138,7 +138,7 @@ export default function Header() {
                     <Link to='/project'>Project</Link>
                 </Navbar.Link>
                 <Navbar.Link active={pathname === "/loan"} as='div'>
-                    <Link to='/loan'>Loan</Link>
+                    <Link to='/loan'>Đăng ký vay</Link>
                 </Navbar.Link>
             </Navbar.Collapse>
         </Navbar>

@@ -90,7 +90,7 @@ const CreatePost = () => {
 
   return (
     <div className='p-3 max-w-3xl mx-auto min-h-screen'>
-      <h1 className='text-center text-3xl my-7 font-semibold'>Create a post</h1>
+      <h1 className='text-center text-3xl my-7 font-semibold'>Tạo bài viết mới</h1>
       <form className='flex flex-col gap-4' onSubmit={createPost}>
         <div className='flex flex-col gap-4 sm:flex-row justify-between'>
           <TextInput
@@ -140,7 +140,7 @@ const CreatePost = () => {
               <span className="pl-3">Loading...</span>
             </>
           ) : (
-            'Create Post'
+            'Tạo bài viết'
           )}
         </Button>
         {publishError && (

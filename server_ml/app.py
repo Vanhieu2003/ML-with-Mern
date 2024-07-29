@@ -4,7 +4,7 @@ from joblib import load
 from flask_cors import CORS
 
 # Load the trained Random Forest model
-model = load('random_forest_model_ROS.joblib')
+model = load('random_forest_model_SMOTE.joblib')
 
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "http://localhost:3000"}})  # Hoặc thay "*" bằng URL cụ thể

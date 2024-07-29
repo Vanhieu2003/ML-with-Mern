@@ -12,83 +12,100 @@ const User = require('../models/userModel');
 //UNPROTECTED
 const signupUser = async (req, res, next) => {
     try {
-        const { name, email, password, password2, phone, address, home, sex, dob, nationality, id } = req.body;
-        const cccdImage = req.files?.cccdImage;
-
-        // Kiểm tra dữ liệu đầu vào
-        if (!name || !email || !password || !phone || !address || !id || !home || !sex || !dob || !nationality || !cccdImage) {
-            return next(new HttpError('Fill in all fields', 422));
+      const { name, email, password, password2, phone, address, home, sex, dob, issue_date, nationality, id } = req.body;
+      const cccdImage = req.files?.cccdImage;
+      const cccdImage_behind = req.files?.cccdImage_behind;
+  
+      // Kiểm tra dữ liệu đầu vào
+      if (!name || !email || !password || !phone || !address || !id || !home || !sex || !dob || !nationality || !cccdImage || !cccdImage_behind || !issue_date) {
+        return next(new HttpError('Fill in all fields', 422));
+      }
+  
+      // Kiểm tra email và phone
+      const newEmail = email.toLowerCase();
+      const emailExists = await User.findOne({ email: newEmail });
+      if (emailExists) {
+        return next(new HttpError("Email already exists.", 422));
+      }
+      const phoneExists = await User.findOne({ phone });
+      if (phoneExists) {
+        return next(new HttpError('Phone number already exists.', 422));
+      }
+  
+      // Kiểm tra ID
+      const idExists = await User.findOne({ id });
+      if (idExists) {
+        return next(new HttpError('ID already exists.', 422));
+      }
+  
+      // Kiểm tra password
+      if (password.trim().length < 6) {
+        return next(new HttpError("Password should be at least 6 characters.", 422));
+      }
+  
+      if (password !== password2) {
+        return next(new HttpError("Passwords don't match.", 422));
+      }
+  
+      // Kiểm tra kích thước ảnh CCCD
+      if (cccdImage.size > 5 * 1024 * 1024 || cccdImage_behind.size > 5 * 1024 * 1024) { // 5 MB
+        return next(new HttpError("CCCD image too big. File should be less than 5MB", 422));
+      }
+  
+      // Đổi tên file và lưu ảnh CCCD phía trước
+      let fileName = cccdImage.name;
+      let splittedFilename = fileName.split('.');
+      let newFilename = splittedFilename[0] + '-' + uuid() + "." + splittedFilename[splittedFilename.length - 1];
+      const uploadPath = path.join(__dirname, '..', 'uploads', newFilename);
+  
+      // Đổi tên file và lưu ảnh CCCD phía sau
+      let fileNameBehind = cccdImage_behind.name;
+      let splittedFilenameBehind = fileNameBehind.split('.');
+      let newFilenameBehind = splittedFilenameBehind[0] + '-' + uuid() + "." + splittedFilenameBehind[splittedFilenameBehind.length - 1];
+      const uploadPathBehind = path.join(__dirname, '..', 'uploads', newFilenameBehind);
+  
+      // Di chuyển ảnh CCCD phía trước
+      cccdImage.mv(uploadPath, async (err) => {
+        if (err) {
+          return next(new HttpError('Failed to upload image.', 500));
         }
-
-        // Kiểm tra email và phone
-        const newEmail = email.toLowerCase();
-        const emailExists = await User.findOne({ email: newEmail });
-        if (emailExists) {
-            return next(new HttpError("Email already exists.", 422));
-        }
-        const phoneExists = await User.findOne({ phone });
-        if (phoneExists) {
-            return next(new HttpError('Phone number already exists.', 422));
-        }
-
-        // Kiểm tra ID
-        const idExists = await User.findOne({ id });
-        if (idExists) {
-            return next(new HttpError('ID already exists.', 422));
-        }
-
-        // Kiểm tra password
-        if (password.trim().length < 6) {
-            return next(new HttpError("Password should be at least 6 characters.", 422));
-        }
-
-        if (password !== password2) {
-            return next(new HttpError("Passwords don't match.", 422));
-        }
-
-        // Kiểm tra kích thước và lưu ảnh CCCD
-        if (cccdImage.size > 5 * 1024 * 1024) { // 5 MB
-            return next(new HttpError("CCCD image too big. File should be less than 5MB", 422));
-        }
-
-        // Đổi tên file
-        let fileName = cccdImage.name;
-        let splittedFilename = fileName.split('.');
-        let newFilename = splittedFilename[0] + '-' + uuid() + "." + splittedFilename[splittedFilename.length - 1];
-        const uploadPath = path.join(__dirname, '..', 'uploads', newFilename);
-
-        cccdImage.mv(uploadPath, async (err) => {
-            if (err) {
-                return next(new HttpError('Failed to upload image.', 500));
-            }
-
-            // Tạo người dùng mới với thông tin
-            const salt = await bcrypt.genSalt(10);
-            const hashedPass = await bcrypt.hash(password, salt);
-            const newUser = await User.create({
-                name,
-                email: newEmail,
-                password: hashedPass,
-                phone,
-                id,
-                sex,
-                dob,
-                nationality,
-                home,
-                address,
-                cccdImage: newFilename // Lưu tên file ảnh CCCD vào cơ sở dữ liệu
-            });
-
-            if (!newUser) {
-                return next(new HttpError("User couldn't be created", 422));
-            }
-
-            res.status(201).json({ message: `User ${newUser.email} signed up` });
+  
+        // Di chuyển ảnh CCCD phía sau
+        cccdImage_behind.mv(uploadPathBehind, async (err) => {
+          if (err) {
+            return next(new HttpError('Failed to upload behind image.', 500));
+          }
+  
+          // Tạo người dùng mới với thông tin
+          const salt = await bcrypt.genSalt(10);
+          const hashedPass = await bcrypt.hash(password, salt);
+          const newUser = await User.create({
+            name,
+            email: newEmail,
+            password: hashedPass,
+            phone,
+            id,
+            sex,
+            dob,
+            nationality,
+            home,
+            address,
+            issue_date,
+            cccdImage: newFilename, // Lưu tên file ảnh CCCD phía trước vào cơ sở dữ liệu
+            cccdImage_behind: newFilenameBehind // Lưu tên file ảnh CCCD phía sau vào cơ sở dữ liệu
+          });
+  
+          if (!newUser) {
+            return next(new HttpError("User couldn't be created", 422));
+          }
+  
+          res.status(201).json({ message: `User ${newUser.email} signed up` });
         });
+      });
     } catch (error) {
-        return next(new HttpError("User Sign Up failed.", 422));
+      return next(new HttpError("User Sign Up failed.", 422));
     }
-};
+  };
 //============ Login a user
 //POST : api/users/login
 //UNPROTECTED
@@ -355,4 +372,28 @@ const deleteUser = async (req, res, next) => {
     }
 };
 
-module.exports = { signupUser, loginUser, editUser, changeAvatar, getAuthors, getUser, logoutUser, deleteUser };
+
+//============ Verify User
+//PATCH : api/users/verify-user/:id
+//PROTECTED
+const verifyUser = async (req, res, next) => {
+    try {
+        const { id } = req.params;
+
+        // Tìm người dùng theo ID
+        const user = await User.findById(id);
+        if (!user) {
+            return next(new HttpError("Người dùng không tồn tại.", 404));
+        }
+
+        // Cập nhật trạng thái KYC của người dùng
+        user.isKYC = true;
+        await user.save();
+
+        res.status(200).json({ message: "Người dùng đã được xác minh thành công.", user });
+    } catch (error) {
+        return next(new HttpError("Xác minh người dùng thất bại.", 500));
+    }
+};
+
+module.exports = { signupUser, loginUser, editUser, changeAvatar, getAuthors, getUser, logoutUser, deleteUser, verifyUser };

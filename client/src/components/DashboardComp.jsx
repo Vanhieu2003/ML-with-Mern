@@ -53,6 +53,7 @@ export default function DashboardComp() {
         console.log(error.message);
       }
     };
+    
 
     const fetchLoans = async () => {
       try {
@@ -79,13 +80,19 @@ export default function DashboardComp() {
     }
   }, [currentUser]);
 
+
+  // Lọc các khoản vay có dự đoán là 'Charged-Off'
+  const filteredLoansFalse = loans.filter((loan) => loan.loan_status == false);
+  // Lọc các khoản vay có dự đoán là 'Fully Paid'
+  const filteredLoansTrue = loans.filter((loan) => loan.loan_status == true);
+
   return (
     <div className='p-3 md:mx-auto'>
       <div className='flex-wrap flex gap-4 justify-center '>
         <div className='flex flex-col p-3 dark:bg-slate-800 gap-4 md:w-72 w-full rounded-md shadow-md'>
           <div className='flex justify-between'>
             <div>
-              <h3 className='text-gray-500 text-md uppercase'>Total Users</h3>
+              <h3 className='text-gray-500 text-md uppercase'>Tổng người dùng </h3>
               <p className='text-2xl'>{totalUsers}</p>
             </div>
             <HiOutlineUserGroup className='bg-teal-600 text-white rounded-full text-5xl p-3 shadow-lg' />
@@ -95,13 +102,13 @@ export default function DashboardComp() {
               <HiArrowNarrowUp />
               {lastMonthUsers}
             </span>
-            <div className='text-gray-500'>Last Month</div>
+            <div className='text-gray-500'>Được cập nhật </div>
           </div>
         </div>
         <div className='flex flex-col p-3 dark:bg-slate-800 gap-4 md:w-72 w-full rounded-md shadow-md'>
           <div className='flex justify-between'>
             <div>
-              <h3 className='text-gray-500 text-md uppercase'>Total Posts</h3>
+              <h3 className='text-gray-500 text-md uppercase'>Tổng bài viết</h3>
               <p className='text-2xl'>{totalPosts}</p>
             </div>
             <HiDocumentText className='bg-lime-600 text-white rounded-full text-5xl p-3 shadow-lg' />
@@ -111,13 +118,13 @@ export default function DashboardComp() {
               <HiArrowNarrowUp />
               {lastMonthPosts}
             </span>
-            <div className='text-gray-500'>Last Month</div>
+            <div className='text-gray-500'>Được cập nhật</div>
           </div>
         </div>
         <div className='flex flex-col p-3 dark:bg-slate-800 gap-4 md:w-72 w-full rounded-md shadow-md'>
           <div className='flex justify-between'>
             <div>
-              <h3 className='text-gray-500 text-md uppercase'>Total Loans</h3>
+              <h3 className='text-gray-500 text-md uppercase'>Tổng khoản vay</h3>
               <p className='text-2xl'>{totalLoans}</p>
             </div>
             <HiCreditCard className='bg-teal-600 text-white rounded-full text-5xl p-3 shadow-lg' />
@@ -127,22 +134,22 @@ export default function DashboardComp() {
               <HiArrowNarrowUp />
               {lastMonthLoans}
             </span>
-            <div className='text-gray-500'>Last Month</div>
+            <div className='text-gray-500'>Được cập nhật</div>
           </div>
         </div>
       </div>
       <div className='flex flex-wrap gap-4 py-3 mx-auto justify-center'>
         <div className='flex flex-col w-full md:w-auto shadow-md p-2 rounded-md dark:bg-gray-800'>
           <div className='flex justify-between  p-3 text-sm font-semibold'>
-            <h1 className='text-center p-2'>Recent users</h1>
+            <h1 className='text-center p-2'>Người dùng gần đây</h1>
             <Button outline gradientDuoTone='greenToBlue'>
-              <Link to={'/dashboard?tab=users'}>See all</Link>
+              <Link to={'/dashboard?tab=users'}>Xem tất cả</Link>
             </Button>
           </div>
           <Table hoverable>
             <Table.Head>
-              <Table.HeadCell>User image</Table.HeadCell>
-              <Table.HeadCell>Username</Table.HeadCell>
+              <Table.HeadCell>Ảnh đại diện</Table.HeadCell>
+              <Table.HeadCell>Tên người dùng</Table.HeadCell>
             </Table.Head>
             {users &&
               users.map((user) => (
@@ -161,19 +168,18 @@ export default function DashboardComp() {
               ))}
           </Table>
         </div>
-   
         <div className='flex flex-col w-full md:w-auto shadow-md p-2 rounded-md dark:bg-gray-800'>
           <div className='flex justify-between  p-3 text-sm font-semibold'>
-            <h1 className='text-center p-2'>Recent loans</h1>
+            <h1 className='text-center p-2'>Khoản vay gần đây</h1>
             <Button outline gradientDuoTone='greenToBlue'>
-              <Link to={'/dashboard?tab=loans'}>See all</Link>
+              <Link to={'/dashboard?tab=loans'}>Xem tất cả</Link>
             </Button>
           </div>
           <Table hoverable>
             <Table.Head>
-              <Table.HeadCell>Name User</Table.HeadCell>
-              <Table.HeadCell>Email User</Table.HeadCell>
-              <Table.HeadCell>Loan Prediction</Table.HeadCell>
+              <Table.HeadCell>Tên người dùng</Table.HeadCell>
+              <Table.HeadCell>Email</Table.HeadCell>
+              <Table.HeadCell>Dự đoán</Table.HeadCell>
             </Table.Head>
             {loans &&
               loans.map((loans) => (
@@ -194,16 +200,71 @@ export default function DashboardComp() {
         </div>
         <div className='flex flex-col w-full md:w-auto shadow-md p-2 rounded-md dark:bg-gray-800'>
           <div className='flex justify-between  p-3 text-sm font-semibold'>
-            <h1 className='text-center p-2'>Recent posts</h1>
+            <h1 className='text-center p-2'>Khoản vay chưa được duyệt</h1>
             <Button outline gradientDuoTone='greenToBlue'>
-              <Link to={'/dashboard?tab=posts'}>See all</Link>
+              <Link to={'/dashboard?tab=loans'}>Xem tất cả</Link>
             </Button>
           </div>
           <Table hoverable>
             <Table.Head>
-              <Table.HeadCell>Post image</Table.HeadCell>
-              <Table.HeadCell>Post Title</Table.HeadCell>
-              <Table.HeadCell>Category</Table.HeadCell>
+              <Table.HeadCell>Tên người dùng</Table.HeadCell>
+              <Table.HeadCell>Email</Table.HeadCell>
+              <Table.HeadCell>Tình trạng</Table.HeadCell>
+            </Table.Head>
+            {filteredLoansFalse &&
+              filteredLoansFalse.map((loan) => (
+                <Table.Body key={loan._id} className='divide-y'>
+                  <Table.Row className='bg-white dark:border-gray-700 dark:bg-gray-800'>
+                    <Table.Cell>{loan.user.name}</Table.Cell>
+                    <Table.Cell>{loan.user.email}</Table.Cell>
+                    <Table.Cell>
+                      {loan.loan_status === false ? <FaTimes className='text-red-500' /> : <FaCheck className='text-green-500' />}
+                    </Table.Cell>
+                  </Table.Row>
+                </Table.Body>
+              ))}
+          </Table>
+        </div>
+        <div className='flex flex-col w-full md:w-auto shadow-md p-2 rounded-md dark:bg-gray-800'>
+          <div className='flex justify-between  p-3 text-sm font-semibold'>
+            <h1 className='text-center p-2'>Khoản vay được duyệt</h1>
+            <Button outline gradientDuoTone='greenToBlue'>
+              <Link to={'/dashboard?tab=loans'}>Xem tất cả</Link>
+            </Button>
+          </div>
+          <Table hoverable>
+            <Table.Head>
+              <Table.HeadCell>Tên người dùng</Table.HeadCell>
+              <Table.HeadCell>Email</Table.HeadCell>
+              <Table.HeadCell>Tình trạng</Table.HeadCell>
+            </Table.Head>
+            {filteredLoansTrue &&
+              filteredLoansTrue.map((loan) => (
+                <Table.Body key={loan._id} className='divide-y'>
+                  <Table.Row className='bg-white dark:border-gray-700 dark:bg-gray-800'>
+                    <Table.Cell>{loan.user.name}</Table.Cell>
+                    <Table.Cell>{loan.user.email}</Table.Cell>
+                    <Table.Cell>
+                      {loan.loan_status === false ? <FaTimes className='text-red-500' /> : <FaCheck className='text-green-500' />}
+                    </Table.Cell>
+                  </Table.Row>
+                </Table.Body>
+              ))}
+          </Table>
+        </div>
+       
+        <div className='flex flex-col w-full md:w-auto shadow-md p-2 rounded-md dark:bg-gray-800'>
+          <div className='flex justify-between  p-3 text-sm font-semibold'>
+            <h1 className='text-center p-2'>Bài viết gần đây</h1>
+            <Button outline gradientDuoTone='greenToBlue'>
+              <Link to={'/dashboard?tab=posts'}>Xem tất cả</Link>
+            </Button>
+          </div>
+          <Table hoverable>
+            <Table.Head>
+              <Table.HeadCell>Ảnh bài viết</Table.HeadCell>
+              <Table.HeadCell>Tiêu đề</Table.HeadCell>
+              <Table.HeadCell>Loại</Table.HeadCell>
             </Table.Head>
             {posts &&
               posts.map((post) => (

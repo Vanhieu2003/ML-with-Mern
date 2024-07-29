@@ -8,7 +8,8 @@ const {
   getAuthors,
   getUser,
   logoutUser,
-  deleteUser // Thêm deleteUser vào đây
+  deleteUser,
+  verifyUser // Thêm deleteUser vào đây
 } = require('../controllers/userControllers');
 const authMiddleware = require('../middleware/authMiddleware');
 const roleCheck = require('../middleware/roleCheck');
@@ -22,7 +23,8 @@ router.get('/:id', authMiddleware, getUser);
 router.get('/', authMiddleware, roleCheck(true), getAuthors); // Chỉ admin mới được truy cập
 router.post('/change-avatar', authMiddleware, changeAvatar);
 router.patch('/edit-user/:id', authMiddleware, roleCheck(false), editUser); // Người dùng có thể chỉnh sửa thông tin của chính họ
-router.delete('/delete-user/:id', authMiddleware, roleCheck(true), deleteUser); // Thêm route để xóa người dùng
+router.delete('/delete-user/:id', authMiddleware, roleCheck(true), deleteUser);
+router.patch('/verify-user/:id', authMiddleware, roleCheck(true), verifyUser); // Thêm route để xóa người dùng
 
 module.exports = router;
 

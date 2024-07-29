@@ -71,13 +71,12 @@ export default function DashUserLoan() {
         <>
           <Table hoverable className='shadow-md'>
             <Table.Head>
-              <Table.HeadCell>Date Created</Table.HeadCell>
-              <Table.HeadCell>User Avatar</Table.HeadCell>
-              <Table.HeadCell>User Name</Table.HeadCell>
+              <Table.HeadCell>Ngày tạo</Table.HeadCell>
+              <Table.HeadCell>Ảnh đại diện</Table.HeadCell>
+              <Table.HeadCell>Tên người dùng</Table.HeadCell>
               <Table.HeadCell>Email</Table.HeadCell>
-              <Table.HeadCell>Prediction</Table.HeadCell>
-              <Table.HeadCell>Loan Status</Table.HeadCell>
-              <Table.HeadCell>View</Table.HeadCell>
+              <Table.HeadCell>Tình thái khoản vay</Table.HeadCell>
+              <Table.HeadCell>Xem chi tiết</Table.HeadCell>
             </Table.Head>
             <Table.Body className='divide-y'>
               {loans.map((loan) => (
@@ -94,12 +93,11 @@ export default function DashUserLoan() {
                     {loan.user.name}
                   </Table.Cell>
                   <Table.Cell>{loan.user.email}</Table.Cell>
-                  <Table.Cell>{loan.prediction === 'Charged-Off' ? <FaTimes className='text-red-500' /> : <FaCheck className='text-green-500' />}</Table.Cell>
                   <Table.Cell>
                     {loan.loan_status ? <FaCheck className='text-green-500' /> : <FaTimes className='text-red-500' />}
                   </Table.Cell>
                   <Table.Cell>
-                    <Button color='info' onClick={() => handleViewLoan(loan)}>View</Button>
+                    <Button color='info' onClick={() => handleViewLoan(loan)}>Xem chi tiết</Button>
                   </Table.Cell>
                 </Table.Row>
               ))}
@@ -107,7 +105,7 @@ export default function DashUserLoan() {
           </Table>
           {showMore && (
             <button onClick={handleShowMore} className='w-full text-teal-500 self-center text-sm py-7'>
-              Show more
+              Xem thêm
             </button>
           )}
         </>
@@ -116,57 +114,68 @@ export default function DashUserLoan() {
       )}
 
       {/* Modal View */}
-      <Modal show={showModal} onClose={() => setShowModal(false)} popup size='md'>
+      <Modal show={showModal} onClose={() => setShowModal(false)} popup size='medium-modal'>
         <Modal.Header />
         <Modal.Body>
-          {selectedLoan ? (
-            <div>
-              <h3 className='text-lg font-medium text-gray-900 dark:text-gray-300 mb-4'>
-                Loan Details
-              </h3>
-              <div className='space-y-4'>
-                {/* Thông tin người vay */}
-                <div>
-                  <h4 className='text-md font-semibold text-gray-900 dark:text-gray-300 mb-2'>Thông tin người vay</h4>
-                  <p className='text-sm text-gray-500 dark:text-gray-400'>Name: {selectedLoan.user.name}</p>
-                  <p className='text-sm text-gray-500 dark:text-gray-400'>Email: {selectedLoan.user.email}</p>
-                  <p className='text-sm text-gray-500 dark:text-gray-400'>Phone: {selectedLoan.user.phone}</p>
-                  <p className='text-sm text-gray-500 dark:text-gray-400'>Address: {selectedLoan.user.address}</p>
-                  <p className='text-sm text-gray-500 dark:text-gray-400'>Date Created: {new Date(selectedLoan.createdAt).toLocaleDateString()}</p>
-                </div>
-               {/* Thông tin khoản vay */}
-               <div>
-                  <h4 className='text-md font-semibold text-gray-900 dark:text-gray-300 mb-2'>Thông tin khoản vay</h4>
-                  <p className='text-sm text-gray-500 dark:text-gray-400'>Loan Amount: {selectedLoan.loan_amnt}</p>
-                  <p className='text-sm text-gray-500 dark:text-gray-400'>Term: {selectedLoan.term}</p>
-                  <p className='text-sm text-gray-500 dark:text-gray-400'>Interest Rate: {selectedLoan.int_rate}%</p>
-                  <p className='text-sm text-gray-500 dark:text-gray-400'>Installment: {selectedLoan.installment}</p>
-                  <p className='text-sm text-gray-500 dark:text-gray-400'>Grade: {selectedLoan.grade}</p>
-                  <p className='text-sm text-gray-500 dark:text-gray-400'>Employment Length: {selectedLoan.emp_length} years</p>
-                  <p className='text-sm text-gray-500 dark:text-gray-400'>Home Ownership: {selectedLoan.home_ownership}</p>
-                  <p className='text-sm text-gray-500 dark:text-gray-400'>Annual Income: {selectedLoan.annual_inc}</p>
-                  <p className='text-sm text-gray-500 dark:text-gray-400'>Verification Status: {selectedLoan.verification_status}</p>
-                  <p className='text-sm text-gray-500 dark:text-gray-400'>FICO Score: {selectedLoan.fico_score}</p>
-                  <p className='text-sm text-gray-500 dark:text-gray-400'>Delinquent 2 Years: {selectedLoan.delinq_2yrs}</p>
-                  <p className='text-sm text-gray-500 dark:text-gray-400'>Purpose: {selectedLoan.purpose}</p>
-                  <p className='text-sm text-gray-500 dark:text-gray-400'>DTI: {selectedLoan.dti}</p>
-                  <p className='text-sm text-gray-500 dark:text-gray-400'>Open Accounts: {selectedLoan.open_acc}</p>
-                  <p className='text-sm text-gray-500 dark:text-gray-400'>Public Records: {selectedLoan.pub_rec}</p>
-                  <p className='text-sm text-gray-500 dark:text-gray-400'>Public Record Bankruptcies: {selectedLoan.pub_rec_bankruptcies}</p>
-                  <p className='text-sm text-gray-500 dark:text-gray-400'>Revolving Balance: {selectedLoan.revol_bal}</p>
-                  <p className='text-sm text-gray-500 dark:text-gray-400'>Revolving Utilization: {selectedLoan.revol_util}%</p>
-                  <p className='text-sm text-gray-500 dark:text-gray-400'>Total Accounts: {selectedLoan.total_acc}</p>
-                  <p className='text-sm text-gray-500 dark:text-gray-400'>tot_cur_bal: {selectedLoan.tot_cur_bal}</p>
-                  <p className='text-sm text-gray-500 dark:text-gray-400'>Prediction: <strong>{selectedLoan.prediction}</strong></p>
+        {selectedLoan ? (
+            <div className='grid grid-cols-3 gap-4'>
+              {/* Thông tin người vay */}
+              <div className='col-span-3 md:col-span-1'>
+                <h3 className='text-lg font-medium text-gray-900 dark:text-gray-300 mb-4'>
+                  Thông tin người vay
+                </h3>
+                <div className='space-y-4'>
+                  <img
+                    src={`${process.env.REACT_APP_ASSET_URL}/uploads/${selectedLoan.user.avatar}`}
+                    alt={selectedLoan.user.name}
+                    className='w-20 h-20 object-cover bg-gray-500 rounded-full mb-4 mx-auto'
+                  />
+                  <p className='text-sm text-gray-500 dark:text-gray-400'><strong>Họ và tên:</strong> {selectedLoan.user.name}</p>
+                  <p className='text-sm text-gray-500 dark:text-gray-400'><strong>Mã số CCCD:</strong> {selectedLoan.user.id}</p>
+                  <p className='text-sm text-gray-500 dark:text-gray-400'><strong>Ngày cấp:</strong> {selectedLoan.user.issue_date}</p>
+                  <p className='text-sm text-gray-500 dark:text-gray-400'><strong>Email:</strong> {selectedLoan.user.email}</p>
+                  <p className='text-sm text-gray-500 dark:text-gray-400'><strong>Số điện thoại:</strong> {selectedLoan.user.phone}</p>
+                  <p className='text-sm text-gray-500 dark:text-gray-400'><strong>Quê quán:</strong> {selectedLoan.user.home}</p>
+                  <p className='text-sm text-gray-500 dark:text-gray-400'><strong>Địa chỉ:</strong> {selectedLoan.user.address}</p>
+                  <p className='text-sm text-gray-500 dark:text-gray-400'><strong>Ngày sinh:</strong> {selectedLoan.user.dob}</p>
+                  <p className='text-sm text-gray-500 dark:text-gray-400'><strong>Giới tính:</strong> {selectedLoan.user.sex}</p>
                 </div>
               </div>
-            </div>
+                {/* Thông tin khoản vay */}
+                <div className='col-span-3 md:col-span-2'>
+                  <h3 className='text-lg font-medium text-gray-900 dark:text-gray-300 mb-4'>
+                    Thông tin khoản vay
+                  </h3>
+
+                  <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4'>
+                    <p className='text-sm text-gray-500 dark:text-gray-400'><strong>Số tiền vay: </strong>{selectedLoan.loan_amnt}</p>
+                    <p className='text-sm text-gray-500 dark:text-gray-400'><strong>Thời hạn vay:</strong> {selectedLoan.term} tháng</p>
+                    <p className='text-sm text-gray-500 dark:text-gray-400'><strong>Lãi suất:</strong> {selectedLoan.int_rate}%</p>
+                    <p className='text-sm text-gray-500 dark:text-gray-400'><strong>Khoản trả góp hàng tháng:</strong> {selectedLoan.installment} USD</p>
+                    <p className='text-sm text-gray-500 dark:text-gray-400'><strong>Xếp hạng:</strong> {selectedLoan.grade}</p>
+                    <p className='text-sm text-gray-500 dark:text-gray-400'><strong>Kinh nghiệm làm việc:</strong> {selectedLoan.emp_length} năm</p>
+                    <p className='text-sm text-gray-500 dark:text-gray-400'><strong>Tình trạng nhà ở:</strong> {selectedLoan.home_ownership}</p>
+                    <p className='text-sm text-gray-500 dark:text-gray-400'><strong>Điểm FICO:</strong> {selectedLoan.fico_score}</p>
+                    <p className='text-sm text-gray-500 dark:text-gray-400'><strong>Mục đích vay:</strong> {selectedLoan.purpose}</p>
+                    <p className='text-sm text-gray-500 dark:text-gray-400'><strong>Tỷ lệ nợ trên thu nhập:</strong> {selectedLoan.dti}</p>
+                    <p className='text-sm text-gray-500 dark:text-gray-400'><strong>Số tài khoản đã mở:</strong> {selectedLoan.open_acc}</p>
+                    <p className='text-sm text-gray-500 dark:text-gray-400'><strong>Tổng tài khoản đã mở:</strong> {selectedLoan.total_acc}</p>
+                    <p className='text-sm text-gray-500 dark:text-gray-400'><strong>Số lượng hồ sơ công cộng:</strong> {selectedLoan.pub_rec}</p>
+                    <p className='text-sm text-gray-500 dark:text-gray-400'><strong>Số lượng hồ sơ phá sản công cộng:</strong> {selectedLoan.pub_rec_bankruptcies}</p>
+                    <p className='text-sm text-gray-500 dark:text-gray-400'><strong>Số dư tín dụng:</strong> {selectedLoan.revol_bal}</p>
+                    <p className='text-sm text-gray-500 dark:text-gray-400'><strong>Tỷ lệ sử dụng tín dụng:</strong> {selectedLoan.revol_util}%</p>
+                    <p className='text-sm text-gray-500 dark:text-gray-400'><strong>Kết quả dự đoán:</strong> {selectedLoan.prediction}</p>
+                    <p className='text-sm text-gray-500 dark:text-gray-400'><strong>Trạng thái khoản vay:</strong> {selectedLoan.loan_status ? 'Cho phép' : 'Từ chối'}</p>
+                  </div>
+                </div>
+              </div>
+
           ) : (
             <p className='text-gray-500 dark:text-gray-400'>No details available</p>
           )}
         </Modal.Body>
         <Modal.Footer>
-        <Button onClick={() => setShowModal(false)}>Close</Button>
+          <Button onClick={() => setShowModal(false)}>Close</Button>
         </Modal.Footer>
       </Modal>
     </div>

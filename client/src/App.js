@@ -27,33 +27,33 @@ import NewsPage from './pages/NewsPage';
 
 const App = () => {
   return (
-  
-      <Router>
-        <ScrollToTop />
-        <Routes>
-          <Route path="/" element={<Layout />}>
-            <Route path="/" element={<Home />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/project" element={<Projects />} />
-            <Route path="/signup" element={<SignUp />} />
-            <Route path="/search" element={<Search />} />
-            <Route element={<PrivateRoute />}>
-              <Route path='/dashboard' element={<Dashboard />} />
-            </Route>
-            <Route element={<AdminPrivateRoute />}>
-              <Route path='/create-post' element={<CreatePost />} />
-              <Route path="/update-post/:id" element={<EditPost />} />
-            </Route>
-            <Route path="/post/:id" element={<PostPage />} />
-            <Route path="/about" element={<AboutPage />} />
-            <Route path="/loan" element={<LoanPage />} />
-            <Route path="/contactPage" element={<ContactPage />} />
-            <Route path="/news" element={<NewsPage />} />
-            <Route path="*" element={<ErrorPage />} />
+
+    <Router>
+      <ScrollToTop />
+      <Routes>
+        <Route path="/" element={<Layout />}>
+          <Route path="/" element={<Home />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/project" element={<Projects />} />
+          <Route path="/signup" element={<SignUp />} />
+          <Route path="/search" element={<Search />} />
+          <Route element={<PrivateRoute />}>
+            <Route path='/dashboard' element={<Dashboard />} />
           </Route>
-        </Routes>
-      </Router>
- 
+          <Route element={<AdminPrivateRoute />}>
+            <Route path='/create-post' element={<CreatePost />} />
+            <Route path="/update-post/:id" element={<EditPost />} />
+          </Route>
+          <Route path="/post/:id" element={<PostPage />} />
+          <Route path="/about" element={<AboutPage />} />
+          <Route path="/loan" element={<LoanPage />} />
+          <Route path="/contactPage" element={<ContactPage />} />
+          <Route path="/news" element={<NewsPage />} />
+          <Route path="*" element={<ErrorPage />} />
+        </Route>
+      </Routes>
+    </Router>
+
   );
 };
 

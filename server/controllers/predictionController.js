@@ -31,7 +31,7 @@ const getPrediction = async (req, res, next) => {
             .sort({ createdAt: sortDirection })
             .skip(startIndex)
             .limit(limit)
-            .populate('user', 'name email avatar phone address'); // Thêm 'name' để populate tên người dùng
+            .populate('user', 'name email avatar phone address id issue_date dob sex home'); // Thêm 'name' để populate tên người dùng
         
         const totalLoans = await Loan.countDocuments();
         const now = new Date();
@@ -60,7 +60,7 @@ const getPredictionByUserId = async (req, res, next) => {
             .sort({ createdAt: sortDirection })
             .skip(startIndex)
             .limit(limit)
-            .populate('user', 'name email avatar phone address');
+            .populate('user', 'name email avatar phone address id issue_date dob sex home');
 
         const totalLoans = await Loan.countDocuments({ user: userId });
         const now = new Date();

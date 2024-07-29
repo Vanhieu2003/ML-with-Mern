@@ -97,7 +97,7 @@ const PostPage = () => {
       <div className='p-3 post-content mb-6' dangerouslySetInnerHTML={{ __html: post?.description }} />
       <CallToAction />
       <div className='flex flex-col items-center mb-6'>
-        <h2 className='text-xl font-semibold mb-4'>Recent Articles</h2>
+        <h2 className='text-xl font-semibold mb-4'>Bài viết gần đây</h2>
         <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 w-full'>
           {recentPosts &&
             recentPosts.map((post) => <PostCard key={post._id} post={post} />)}

@@ -43,7 +43,7 @@ export default function DashSidebar() {
                                 labelColor="dark"
                                 as='div'
                             >
-                                Dashboard
+                                Quản lý chung
                             </Sidebar.Item>
                         </Link>
                     )}
@@ -56,7 +56,7 @@ export default function DashSidebar() {
                             labelColor="dark"
                             as='div'
                         >
-                            Profile
+                            Thông tin
                         </Sidebar.Item>
                     </Link>
                     {currentUser.isAdmin && (
@@ -66,7 +66,7 @@ export default function DashSidebar() {
                                 icon={HiDocumentText}
                                 as='div'
                             >
-                                Post
+                                Bài viết
                             </Sidebar.Item>
                         </Link>
 
@@ -79,7 +79,7 @@ export default function DashSidebar() {
                                 icon={HiUserGroup}
                                 as='div'
                             >
-                                User
+                                Người dùng
                             </Sidebar.Item>
                         </Link>
 
@@ -93,7 +93,7 @@ export default function DashSidebar() {
                                 labelColor="dark"
                                 as='div'
                             >
-                                Loans
+                                Khoản vay
                             </Sidebar.Item>
                         </Link>
 
@@ -107,7 +107,7 @@ export default function DashSidebar() {
                                 labelColor="dark"
                                 as='div'
                             >
-                                Loan
+                                Khoản vay
                             </Sidebar.Item>
                         </Link>
 
@@ -119,7 +119,7 @@ export default function DashSidebar() {
                         className='cursor-pointer'
                         onClick={handleLogout}
                     >
-                        Sign Out
+                        Đăng xuất
                     </Sidebar.Item>
                 </Sidebar.ItemGroup>
             </Sidebar.Items>

@@ -24,8 +24,9 @@ const Home = () => {
         Tài chính thông minh - tương lai vững vàng.
         Nơi đây chúng tôi cung cấp kiến thức tài chính và 
         cung cấp các dịch vụ cho vay với nhiều ưu đãi hấp dẫn.
-        Hãy đăng ký thử ở đây và trải nghiệm dịch vụ của chúng tôi.
+        
       </p>
+      <p className='text-gray-500 text-xs sm:text-sm'>Hãy đăng ký thử và trải nghiệm dịch vụ của chúng tôi.</p>
       <p className='text-gray-500 text-xs sm:text-sm'>
         Hãy theo dõi các tin tức chứng tôi cập nhật tại đây !!!
       </p>
@@ -33,7 +34,7 @@ const Home = () => {
         to='/search'
         className='text-xs sm:text-sm text-teal-500 font-bold hover:underline'
       >
-        View all posts
+        Xem tất cả bài viết
       </Link>
       <div className='p-3  dark:bg-slate-700'>
         <CallToAction />
@@ -42,7 +43,7 @@ const Home = () => {
       <div className='max-w-6xl mx-auto p-3 flex flex-col gap-8 py-7'>
         {posts && posts.length > 0 && (
           <div className='flex flex-col gap-6'>
-            <h2 className='text-2xl font-semibold text-center'>Recent Posts</h2>
+            <h2 className='text-2xl font-semibold text-center'>Bài viết gần đây</h2>
             <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6'>
               {posts.slice(0, 3).map((post) => (
                 <PostCard key={post._id} post={post} />
@@ -52,7 +53,7 @@ const Home = () => {
               to={'/search'}
               className='text-lg text-teal-500 hover:underline text-center'
             >
-              View all posts
+              Xem tất cả bài viết
             </Link>
           </div>
         )}

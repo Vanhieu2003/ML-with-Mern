@@ -13,7 +13,7 @@ export default function CallToAction() {
                 Tài chính thông minh - tương lai vững vàng
             </p>
             <Button gradientDuoTone='greenToBlue' className='rounded-tl-xl rounded-bl-none'>
-                <Link to='/loan'>Click here try the service !!!</Link>
+                <Link to='/loan'>Bấm vào đây trải nghiệm !!!</Link>
             </Button>
         </div>
         <div className="p-7 flex-1">

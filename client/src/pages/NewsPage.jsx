@@ -51,7 +51,7 @@ export default function NewsPage() {
 
   return (
     <div className='p-7'>
-      <h1 className='text-3xl font-bold text-center mb-7'>News</h1>
+      <h1 className='text-3xl font-bold text-center mb-7'>Tất cả bài viết</h1>
       {loading && posts.length === 0 ? (
         <div className="flex justify-center items-center h-screen">
           <Spinner size="lg" />
@@ -77,7 +77,7 @@ export default function NewsPage() {
             onClick={handleShowMore}
             className='text-teal-500 text-lg hover:underline'
           >
-            Show More
+            Xem thêm
           </button>
         </div>
       )}
