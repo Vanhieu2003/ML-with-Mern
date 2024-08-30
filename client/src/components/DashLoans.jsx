@@ -156,7 +156,7 @@ export default function DashLoans() {
                     </Table.Cell>
                     <Table.Cell>{loan.user.name}</Table.Cell>
                     <Table.Cell>{loan.user.email}</Table.Cell>
-                    <Table.Cell>{loan.prediction === 'Charged-Off' ? <FaTimes className='text-red-500' /> : <FaCheck className='text-green-500' />}</Table.Cell>
+                    <Table.Cell>{loan.random_forest.prediction === 'Charged-Off' ? <FaTimes className='text-red-500' /> : <FaCheck className='text-green-500' />}</Table.Cell>
                     <Table.Cell>
                       {loan.loan_status ? (
                         <FaCheck className='text-green-500' />
@@ -217,25 +217,28 @@ export default function DashLoans() {
                   Thông tin khoản vay
                 </h3>
                 <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4'>
-                  <p className='text-sm text-gray-500 dark:text-gray-400'><strong>Số tiền vay: </strong>{selectedLoan.loan_amnt}</p>
-                  <p className='text-sm text-gray-500 dark:text-gray-400'><strong>Thời hạn vay:</strong> {selectedLoan.term} tháng</p>
-                  <p className='text-sm text-gray-500 dark:text-gray-400'><strong>Lãi suất:</strong> {selectedLoan.int_rate}%</p>
-                  <p className='text-sm text-gray-500 dark:text-gray-400'><strong>Khoản trả góp hàng tháng:</strong> {selectedLoan.installment} USD</p>
-                  <p className='text-sm text-gray-500 dark:text-gray-400'><strong>Xếp hạng:</strong> {selectedLoan.grade}</p>
-                  <p className='text-sm text-gray-500 dark:text-gray-400'><strong>Kinh nghiệm làm việc:</strong> {selectedLoan.emp_length} năm</p>
-                  <p className='text-sm text-gray-500 dark:text-gray-400'><strong>Tình trạng nhà ở:</strong> {selectedLoan.home_ownership}</p>
-                  <p className='text-sm text-gray-500 dark:text-gray-400'><strong>Điểm FICO:</strong> {selectedLoan.fico_score}</p>
-                  <p className='text-sm text-gray-500 dark:text-gray-400'><strong>Mục đích vay:</strong> {selectedLoan.purpose}</p>
-                  <p className='text-sm text-gray-500 dark:text-gray-400'><strong>Tỷ lệ nợ trên thu nhập:</strong> {selectedLoan.dti}</p>
-                  <p className='text-sm text-gray-500 dark:text-gray-400'><strong>Số tài khoản đã mở:</strong> {selectedLoan.open_acc}</p>
-                  <p className='text-sm text-gray-500 dark:text-gray-400'><strong>Tổng tài khoản đã mở:</strong> {selectedLoan.total_acc}</p>
-                  <p className='text-sm text-gray-500 dark:text-gray-400'><strong>Số lượng hồ sơ công cộng:</strong> {selectedLoan.pub_rec}</p>
-                  <p className='text-sm text-gray-500 dark:text-gray-400'><strong>Số lượng hồ sơ phá sản công cộng:</strong> {selectedLoan.pub_rec_bankruptcies}</p>
-                  <p className='text-sm text-gray-500 dark:text-gray-400'><strong>Số dư tín dụng:</strong> {selectedLoan.revol_bal}</p>
-                  <p className='text-sm text-gray-500 dark:text-gray-400'><strong>Tỷ lệ sử dụng tín dụng:</strong> {selectedLoan.revol_util}%</p>
-                  <p className='text-sm text-gray-500 dark:text-gray-400'><strong>Kết quả dự đoán:</strong> {selectedLoan.prediction}</p>
-                  <p className='text-sm text-gray-500 dark:text-gray-400'><strong>Xác suất:</strong> {formatPredictionProba(selectedLoan.prediction_proba)}</p>
-                  <p className='text-sm text-gray-500 dark:text-gray-400'><strong>Trạng thái khoản vay:</strong> {selectedLoan.loan_status ? 'Cho phép' : 'Từ chối'}</p>
+                <p className='text-sm text-gray-500 dark:text-gray-400'><strong>Số tiền vay: </strong>{selectedLoan.loan_amnt}</p>
+    <p className='text-sm text-gray-500 dark:text-gray-400'><strong>Thời hạn vay:</strong> {selectedLoan.term} tháng</p>
+    <p className='text-sm text-gray-500 dark:text-gray-400'><strong>Lãi suất:</strong> {selectedLoan.int_rate}%</p>
+    <p className='text-sm text-gray-500 dark:text-gray-400'><strong>Khoản trả góp hàng tháng:</strong> {selectedLoan.installment} USD</p>
+    <p className='text-sm text-gray-500 dark:text-gray-400'><strong>Xếp hạng:</strong> {selectedLoan.grade}</p>
+    <p className='text-sm text-gray-500 dark:text-gray-400'><strong>Kinh nghiệm làm việc:</strong> {selectedLoan.emp_length} năm</p>
+    <p className='text-sm text-gray-500 dark:text-gray-400'><strong>Tình trạng nhà ở:</strong> {selectedLoan.home_ownership}</p>
+    <p className='text-sm text-gray-500 dark:text-gray-400'><strong>Điểm FICO:</strong> {selectedLoan.fico_score}</p>
+    <p className='text-sm text-gray-500 dark:text-gray-400'><strong>Mục đích vay:</strong> {selectedLoan.purpose}</p>
+    <p className='text-sm text-gray-500 dark:text-gray-400'><strong>Tỷ lệ nợ trên thu nhập:</strong> {selectedLoan.dti}</p>
+    <p className='text-sm text-gray-500 dark:text-gray-400'><strong>Số tài khoản đã mở:</strong> {selectedLoan.open_acc}</p>
+    <p className='text-sm text-gray-500 dark:text-gray-400'><strong>Thu nhập:</strong> {selectedLoan.annual_inc} USD</p>
+    <p className='text-sm text-gray-500 dark:text-gray-400'><strong>Tổng tài khoản đã mở:</strong> {selectedLoan.total_acc}</p>
+    <p className='text-sm text-gray-500 dark:text-gray-400'><strong>Số lượng hồ sơ công cộng:</strong> {selectedLoan.pub_rec}</p>
+    <p className='text-sm text-gray-500 dark:text-gray-400'><strong>Số lượng hồ sơ phá sản công cộng:</strong> {selectedLoan.pub_rec_bankruptcies}</p>
+    <p className='text-sm text-gray-500 dark:text-gray-400'><strong>Số dư tín dụng:</strong> {selectedLoan.revol_bal}</p>
+    <p className='text-sm text-gray-500 dark:text-gray-400'><strong>Tỷ lệ sử dụng tín dụng:</strong> {selectedLoan.revol_util}%</p>
+    <p className='text-sm text-gray-500 dark:text-gray-400'><strong>Kết quả dự đoán (Logistic Regression):</strong> {selectedLoan.logistic_regression.prediction}</p>
+    <p className='text-sm text-gray-500 dark:text-gray-400'><strong>Xác suất (Logistic Regression):</strong> {formatPredictionProba(selectedLoan.logistic_regression.prediction_proba)}</p>
+    <p className='text-sm text-gray-500 dark:text-gray-400'><strong>Kết quả dự đoán (Random Forest):</strong> {selectedLoan.random_forest.prediction}</p>
+    <p className='text-sm text-gray-500 dark:text-gray-400'><strong>Xác suất (Random Forest):</strong> {formatPredictionProba(selectedLoan.random_forest.prediction_proba)}</p>
+    <p className='text-sm text-gray-500 dark:text-gray-400'><strong>Trạng thái khoản vay:</strong> {selectedLoan.loan_status ? 'Cho phép' : 'Từ chối'}</p>
                 </div>
                 <div className='flex items-center justify-center gap-4 mt-6'>
                   <Button color="success" onClick={handleOpenConfirmModal}>Cập nhật trạng thái vay</Button>

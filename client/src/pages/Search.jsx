@@ -173,7 +173,7 @@ export default function Search() {
                   onClick={handleShowMore}
                   className='text-teal-500 text-lg hover:underline p-7'
                 >
-                  Show More
+                  Xem thêm
                 </button>
               )
             )}

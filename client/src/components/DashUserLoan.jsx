@@ -164,7 +164,6 @@ export default function DashUserLoan() {
                     <p className='text-sm text-gray-500 dark:text-gray-400'><strong>Số lượng hồ sơ phá sản công cộng:</strong> {selectedLoan.pub_rec_bankruptcies}</p>
                     <p className='text-sm text-gray-500 dark:text-gray-400'><strong>Số dư tín dụng:</strong> {selectedLoan.revol_bal}</p>
                     <p className='text-sm text-gray-500 dark:text-gray-400'><strong>Tỷ lệ sử dụng tín dụng:</strong> {selectedLoan.revol_util}%</p>
-                    <p className='text-sm text-gray-500 dark:text-gray-400'><strong>Kết quả dự đoán:</strong> {selectedLoan.prediction}</p>
                     <p className='text-sm text-gray-500 dark:text-gray-400'><strong>Trạng thái khoản vay:</strong> {selectedLoan.loan_status ? 'Cho phép' : 'Từ chối'}</p>
                   </div>
                 </div>

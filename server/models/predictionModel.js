@@ -19,10 +19,16 @@ const PredictionSchema = new Schema({
   revol_bal: Number,
   revol_util: Number,
   total_acc: Number,
-  prediction: String,
-  prediction_proba: [[Number]],
-  user: { type: Schema.Types.ObjectId, ref: 'User' },
-  loan_status: {type: Boolean, default: false},  // Tham chiếu đến người dùng
+  logistic_regression: {
+    prediction: String,
+    prediction_proba: [[Number]]
+  },
+  random_forest: {
+    prediction: String,
+    prediction_proba: [[Number]]
+  },
+  user: { type: Schema.Types.ObjectId, ref: 'User' },  // Tham chiếu đến người dùng
+  loan_status: { type: Boolean, default: false },  // Trạng thái khoản vay
 }, { timestamps: true });
 
 module.exports = model('Loan', PredictionSchema);

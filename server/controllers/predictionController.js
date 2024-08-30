@@ -9,15 +9,18 @@ const savePrediction = async (req, res) => {
         const predictionData = req.body;
         const newPrediction = new Prediction({
             ...predictionData,
-            user: req.user.id // Đảm bảo rằng _id được lấy đúng từ req.user
+            user: req.user.id, // Đảm bảo rằng _id được lấy đúng từ req.user
+            logistic_regression: predictionData.logistic_regression,
+            random_forest: predictionData.random_forest
         });
 
         await newPrediction.save();
-        res.status(201).json({ message: 'Prediction saved successfully!',newPrediction });
+        res.status(201).json({ message: 'Prediction saved successfully!', newPrediction });
     } catch (error) {
         res.status(400).json({ message: error.message });
     }
 };
+
 
 
 

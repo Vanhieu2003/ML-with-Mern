@@ -205,7 +205,7 @@ const LoanPage = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
+    
         // Kiểm tra điểm FICO
         if (formData.fico_score < 660) {
             setErrorMessage('Chỉ những người đi vay có điểm tín dụng FICO từ 660 trở lên mới được phê duyệt.');
@@ -213,7 +213,7 @@ const LoanPage = () => {
         } else {
             setErrorMessage('');
         }
-
+    
         try {
             const response = await axios.post('http://127.0.0.1:5000/predict', formData, {
                 headers: {
@@ -221,32 +221,47 @@ const LoanPage = () => {
                     'Authorization': `Bearer ${token}`
                 }
             });
+    
             console.log('Prediction result:', response.data);
-
-            const predictionText = response.data.prediction[0] === 1 ? 'Charged-Off' : 'Fully-Paid';
-            setPredictionResult(predictionText);
+    
+            // Xử lý kết quả của Logistic Regression
+            const logisticPredictionText = response.data.logistic_regression.prediction[0] === 1 ? 'Charged-Off' : 'Fully-Paid';
+            
+            // Xử lý kết quả của Random Forest
+            const rfPredictionText = response.data.random_forest.prediction[0] === 1 ? 'Charged-Off' : 'Fully-Paid';
+            
+            // Hiển thị kết quả prediction của mô hình được chọn (ở đây là logistic)
+            setPredictionResult(logisticPredictionText);
             setShowModal(true);
-
+    
             const saveData = {
                 ...formData,
                 userId: currentUser?._id,
-                prediction: predictionText,
-                prediction_proba: response.data.prediction_proba
+                logistic_regression: {
+                    prediction: logisticPredictionText,
+                    prediction_proba: response.data.logistic_regression.prediction_proba[0]
+                },
+                random_forest: {
+                    prediction: rfPredictionText,
+                    prediction_proba: response.data.random_forest.prediction_proba[0]
+                }
             };
-
+    
             const saveResponse = await axios.post('http://localhost:5000/api/loan/save-prediction', saveData, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
             });
+    
             console.log('Save prediction result:', saveResponse.data);
             handleReset();
-
+    
         } catch (error) {
             console.error('Prediction submission failed:', error);
             alert('Prediction submission failed!');
         }
     };
+    
     const steps = [
         {
             label: 'Kiểm tra thông tin', content: (
@@ -706,7 +721,7 @@ const LoanPage = () => {
                     <div className="mb-4 flex items-center">
                         <Checkbox id="agreement" checked={agreed} onChange={handleAgreementChange} />
                         <Label htmlFor="agreement" className="ml-2">
-                            Đọc và xem <a href="https://drive.google.com/uc?export=download&id=1FkiVl8_XxonGzTlO_7Ot6PPDyxm0DjbN" target="_blank" rel="noopener noreferrer" className="text-blue-500 underline">điều khoản vay</a>
+                            Đọc và xem <a href="https://drive.google.com/uc?export=download&id=1f4QuaxNO_PPB8c3OHD7vBm4MMAt8o82F" target="_blank" rel="noopener noreferrer" className="text-blue-500 underline">điều khoản vay</a>
                         </Label>
                     </div>
 

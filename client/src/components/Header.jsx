@@ -135,7 +135,7 @@ export default function Header() {
                     <Link to='/about'>About</Link>
                 </Navbar.Link>
                 <Navbar.Link active={pathname === "/project"} as='div'>
-                    <Link to='/project'>Project</Link>
+                    <Link to='/project'>Hỏi-đáp</Link>
                 </Navbar.Link>
                 <Navbar.Link active={pathname === "/loan"} as='div'>
                     <Link to='/loan'>Đăng ký vay</Link>
